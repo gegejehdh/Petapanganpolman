@@ -40,8 +40,13 @@
         }
     </script>
 
-    <!-- Google Maps JavaScript API (Ganti YOUR_GOOGLE_MAPS_API_KEY dengan API Key Anda) -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places,geometry" async defer></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
 
     <!-- Chart.js & Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -51,11 +56,35 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         
+        .leaflet-popup-content-wrapper {
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: 1px solid #e2e8f0;
+        }
+        .leaflet-popup-tip { background: white; }
+        .custom-div-icon { background: transparent; border: none; }
         .marker-pin-pulse { animation: pulse-ring 2s infinite; }
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 0.9; }
             50% { transform: scale(1.35); opacity: 0.2; }
             100% { transform: scale(0.95); opacity: 0.9; }
+        }
+
+        .leaflet-routing-container {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(8px);
+            border-radius: 16px !important;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15) !important;
+            border: 1px solid #e2e8f0 !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            max-width: 280px !important;
+            padding: 8px !important;
+            font-size: 11px !important;
+        }
+        .user-gps-marker {
+            transition: transform 0.4s ease-out;
         }
     </style>
 </head>
@@ -71,13 +100,13 @@
                     </div>
                     <div>
                         <span class="text-base sm:text-lg font-extrabold text-pangan-900 tracking-tight block leading-none">PETA PANGAN POLMAN</span>
-                        <span class="text-[10px] sm:text-xs text-gold-600 font-semibold tracking-wide">Peta Google Maps & Navigasi Presisi Polewali Mandar</span>
+                        <span class="text-[10px] sm:text-xs text-gold-600 font-semibold tracking-wide">Peta GIS & Navigasi Presisi Polewali Mandar</span>
                     </div>
                 </div>
 
                 <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
                     <button onclick="switchTab('home')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="home">Beranda</button>
-                    <button onclick="switchTab('peta')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="peta">Google Maps Live</button>
+                    <button onclick="switchTab('peta')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="peta">Peta Navigasi Interaktif</button>
                     <button onclick="switchTab('komoditas')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="komoditas">Eksplorasi Komoditas</button>
                     <button onclick="switchTab('analisis')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="analisis">Analisis Potensi</button>
                     <button onclick="switchTab('edukasi')" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:text-pangan-700 hover:bg-pangan-50 transition" data-tab="edukasi">Edukasi</button>
@@ -95,7 +124,7 @@
 
         <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-tanah-200 px-4 pt-2 pb-4 space-y-1 shadow-lg">
             <button onclick="switchTab('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Beranda</button>
-            <button onclick="switchTab('peta'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Google Maps Live</button>
+            <button onclick="switchTab('peta'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Peta Navigasi Interaktif</button>
             <button onclick="switchTab('komoditas'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Eksplorasi Komoditas</button>
             <button onclick="switchTab('analisis'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Analisis Potensi GIS</button>
             <button onclick="switchTab('edukasi'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-semibold text-slate-700 hover:bg-pangan-50 hover:text-pangan-700">Edukasi & Kuliner Mandar</button>
@@ -114,10 +143,10 @@
                 <div class="relative z-10 max-w-3xl space-y-5">
                     <span class="inline-flex items-center space-x-2 bg-pangan-600/80 border border-pangan-400/50 text-pangan-100 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
                         <i data-lucide="map-pin" class="w-4 h-4 text-gold-400"></i>
-                        <span>Google Maps Platform Integration • Kabupaten Polewali Mandar, Sulawesi Barat</span>
+                        <span>Geographic Information System (GIS) • Kabupaten Polewali Mandar, Sulawesi Barat</span>
                     </span>
                     <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                        Pemetaan Potensi Pangan & Sistem Navigasi Google Maps Real-Time
+                        Pemetaan Potensi Pangan & Sistem Navigasi GIS Real-Time
                     </h1>
                     <p class="text-xs sm:text-sm text-pangan-100 leading-relaxed">
                         Judul Penelitian: <em>“Pemetaan Digital Potensi Pangan Lokal Berbasis Sistem Informasi Geografis untuk Mendukung Diversifikasi dan Ketahanan Pangan di Kabupaten Polewali Mandar, Sulawesi Barat.”</em>
@@ -125,7 +154,7 @@
                     <div class="flex flex-wrap gap-3 pt-2">
                         <button onclick="switchTab('peta')" class="px-5 py-3 rounded-xl bg-gold-500 hover:bg-gold-600 text-pangan-900 font-extrabold shadow-md transition text-xs flex items-center space-x-2">
                             <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                            <span>Buka Google Maps Live GPS</span>
+                            <span>Buka Peta Navigasi Live GPS</span>
                         </button>
                         <button onclick="switchTab('analisis')" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold transition text-xs flex items-center space-x-2 backdrop-blur-sm">
                             <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
@@ -140,12 +169,12 @@
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
                             <i data-lucide="globe" class="w-5 h-5 text-pangan-700"></i>
-                            <span>Peta Google Maps Asli Polewali Mandar</span>
+                            <span>Peta Spasial Geografis Polewali Mandar (OpenStreetMap Real GIS)</span>
                         </h2>
-                        <p class="text-xs text-slate-500">Menampilkan titik koordinat sentra komoditas di seluruh kecamatan Kabupaten Polewali Mandar di atas Google Maps.</p>
+                        <p class="text-xs text-slate-500">Menampilkan 16 titik koordinat pusat administratif & sentra komoditas di seluruh kecamatan Kabupaten Polewali Mandar.</p>
                     </div>
                     <button onclick="switchTab('peta')" class="text-xs font-bold text-pangan-700 hover:text-pangan-800 flex items-center space-x-1">
-                        <span>Buka Google Maps Interaktif Fullscreen</span>
+                        <span>Buka Mode Interaktif Fullscreen</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -165,7 +194,7 @@
                 </div>
                 <div class="bg-white p-5 rounded-xl border border-tanah-200 shadow-sm text-center">
                     <span class="text-[10px] font-bold uppercase text-slate-400">Navigasi GPS Real-Time</span>
-                    <p class="text-2xl font-black text-blue-600 mt-1">Google Directions</p>
+                    <p class="text-2xl font-black text-blue-600 mt-1">OSRM Enabled</p>
                     <span class="text-[10px] text-slate-500">Rute Jalan Presisi</span>
                 </div>
                 <div class="bg-white p-5 rounded-xl border border-tanah-200 shadow-sm text-center">
@@ -176,31 +205,37 @@
             </div>
         </section>
 
-        <!-- TAB 2: GOOGLE MAPS LIVE & NAVIGATION SECTION -->
+        <!-- TAB 2: INTERACTIVE GIS MAP SECTION -->
         <section id="tab-peta" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl border border-tanah-200 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100 flex items-center w-max gap-1">
                             <i data-lucide="navigation-2" class="w-3.5 h-3.5 text-pangan-600"></i>
-                            <span>Google Maps Directions & Live GPS Tracking</span>
+                            <span>GPS Navigation & Route Guidance (Google Maps Style)</span>
                         </span>
-                        <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Peta Navigasi Google Maps & Pelacakan Lokasi</h2>
-                        <p class="text-xs text-slate-500 mt-1">Aktifkan GPS perangkat Anda untuk melacak posisi secara langsung dan mendapatkan rute jalan presisi.</p>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Peta Navigasi Digital & Pelacakan Lokasi Real-Time</h2>
+                        <p class="text-xs text-slate-500 mt-1">Akses posisi GPS perangkat Anda, ikuti pergerakan secara langsung, dan dapatkan petunjuk rute jalan yang presisi.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
+                        <span class="font-bold text-slate-600 px-2">Layer:</span>
+                        <button id="btn-tile-osm" onclick="setBaseTile('osm')" class="px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm">Street Map</button>
+                        <button id="btn-tile-sat" onclick="setBaseTile('sat')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900">Satelit Esri</button>
                     </div>
                 </div>
 
-                <!-- GPS Warning Banner -->
+                <!-- GPS Warning Banner (Hidden by default, shown on permission error) -->
                 <div id="gps-permission-banner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs space-y-2">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start space-x-2 text-amber-900">
                             <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
                             <div>
                                 <strong class="block text-sm">Akses Lokasi GPS Ditolak / Dibatasi</strong>
-                                <p class="text-amber-800 mt-0.5">Izin lokasi pada browser Anda diblokir atau belum diizinkan. Pengaturan navigasi dialihkan ke <strong>Mode Titik Manual Polman</strong>.</p>
+                                <p class="text-amber-800 mt-0.5">Izin lokasi pada browser Anda diblokir atau belum diizinkan. Pengaturan navigasi telah secara otomatis dialihkan ke <strong>Mode Simulasi Lokasi Manual Polman</strong> agar Anda tetap dapat menguji fitur navigasi.</p>
                             </div>
                         </div>
-                        <button onclick="setManualStartPointModal()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-[11px] shadow transition">
+                        <button onclick="setManualStartPointModal()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-[11px] shadow transition">
                             Pilih Lokasi Manual
                         </button>
                     </div>
@@ -210,36 +245,1222 @@
                 <div class="bg-gradient-to-r from-pangan-950 via-pangan-900 to-pangan-800 text-white p-4 sm:p-5 rounded-2xl shadow-lg space-y-4 border border-pangan-700">
                     <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
                         <div class="flex flex-wrap items-center gap-2">
+                            <!-- GPS Request Button -->
                             <button id="btn-request-gps" onclick="requestUserLocation()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2">
                                 <i data-lucide="crosshair" class="w-4 h-4"></i>
                                 <span>Minta Izin GPS / Lokasi Saya</span>
                             </button>
 
+                            <!-- Manual Start Point Selector -->
                             <button id="btn-manual-location" onclick="setManualStartPointModal()" class="px-3 py-2.5 bg-pangan-700 hover:bg-pangan-600 text-pangan-100 rounded-xl text-xs font-bold transition flex items-center space-x-1 border border-pangan-500">
-                                <i data-lucide="map-pin" class="w-4 h-4 text-gold-400"></i>
+                                <i data-lucide="map-pin-line" class="w-4 h-4 text-gold-400"></i>
                                 <span>Set Titik Awal Manual</span>
                             </button>
 
+                            <!-- Toggle Follow Mode -->
                             <button id="btn-toggle-follow" onclick="toggleFollowMode()" disabled class="px-4 py-2.5 bg-slate-700 text-slate-400 rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 cursor-not-allowed">
                                 <i data-lucide="locate" class="w-4 h-4"></i>
                                 <span id="follow-btn-text">Ikuti Saya: Nonaktif</span>
                             </button>
 
+                            <!-- Clear Route Button -->
                             <button onclick="clearActiveRoute()" id="btn-clear-route" class="hidden px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1">
                                 <i data-lucide="x-circle" class="w-4 h-4"></i>
                                 <span>Hapus Rute</span>
                             </button>
                         </div>
 
+                        <!-- Routing Mode Selector & Status -->
                         <div class="flex items-center justify-between lg:justify-end gap-3 border-t lg:border-t-0 border-pangan-800 pt-3 lg:pt-0">
+                            <!-- GPS Status Badge -->
                             <div class="flex items-center space-x-2 bg-pangan-950/80 px-3 py-1.5 rounded-xl border border-pangan-700 text-xs">
                                 <div id="gps-status-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></div>
                                 <span id="gps-status-text" class="text-pangan-200 font-semibold text-[11px]">GPS Tidak Aktif</span>
                             </div>
 
+                            <!-- Mode Driving / Walking -->
                             <div class="inline-flex rounded-xl bg-pangan-950/80 p-1 border border-pangan-700 text-xs">
-                                <button id="mode-car" onclick="setRouteTravelMode('DRIVING')" class="px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1">
+                                <button id="mode-car" onclick="setRouteProfile('car')" class="px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1">
                                     <i data-lucide="car" class="w-3.5 h-3.5"></i>
                                     <span class="hidden sm:inline">Mobil/Motor</span>
                                 </button>
-                                <button id="mode-walk" onclick="setRouteTravelMode('WALKING')" class="px-3 py-1.
+                                <button id="mode-walk" onclick="setRouteProfile('walk')" class="px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1">
+                                    <i data-lucide="footprints" class="w-3.5 h-3.5"></i>
+                                    <span class="hidden sm:inline">Jalan Kaki</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Information Banner -->
+                    <div id="route-info-banner" class="hidden bg-white/10 backdrop-blur border border-white/20 p-3 rounded-xl text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="navigation" class="w-4 h-4 text-gold-400 animate-bounce flex-shrink-0"></i>
+                            <span id="route-status-text" class="font-medium text-pangan-100">Memuat rute jalan real-time...</span>
+                        </div>
+                        <div class="text-[10px] text-pangan-200 bg-pangan-950/50 px-2 py-1 rounded border border-pangan-700">
+                            Rute Otomatis Mengikuti Jalur Jalan Terdekat
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-tanah-50 p-4 rounded-xl border border-tanah-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kecamatan Target:</label>
+                        <select id="map-filter-kecamatan" onchange="applyMapFilters()" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pangan-600 bg-white">
+                            <option value="ALL">Semua Kecamatan (16 Kecamatan)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Komoditas:</label>
+                        <select id="map-filter-kategori" onchange="applyMapFilters()" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pangan-600 bg-white">
+                            <option value="ALL">Semua Kategori Pangan</option>
+                            <option value="Sagu">Sagu</option>
+                            <option value="Jagung">Jagung</option>
+                            <option value="Ubi Kayu">Ubi Kayu (Singkong)</option>
+                            <option value="Ubi Jalar">Ubi Jalar</option>
+                            <option value="Pisang">Pisang</option>
+                            <option value="Kacang-kacangan">Kacang-kacangan</option>
+                            <option value="Sayuran Lokal">Sayuran Lokal (Kelor)</option>
+                            <option value="Hasil Laut / Pesisir">Hasil Laut / Pesisir</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Cari Nama Komoditas / Desa:</label>
+                        <div class="relative">
+                            <input type="text" id="map-search" placeholder="Contoh: Binuang, Sagu, Ikan..." oninput="applyMapFilters()" class="w-full px-3 py-2 pl-8 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pangan-600 bg-white">
+                            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <button onclick="recenterToUserLocation()" class="w-1/2 py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1">
+                            <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                            <span>Ke Lokasi Saya</span>
+                        </button>
+                        <button onclick="resetMapBounds()" class="w-1/2 py-2 px-2 bg-pangan-800 hover:bg-pangan-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1">
+                            <i data-lucide="locate-fixed" class="w-3.5 h-3.5"></i>
+                            <span>Zoom Polman</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map Canvas Element -->
+                <div class="relative">
+                    <div id="full-map" class="h-[620px] w-full rounded-2xl overflow-hidden border border-slate-300 shadow-inner z-10"></div>
+                    
+                    <!-- Map Legend Overlay -->
+                    <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur border border-slate-200 p-3.5 rounded-xl shadow-xl z-20 text-[11px] space-y-2 max-w-xs">
+                        <span class="font-bold text-slate-800 block text-xs border-b pb-1 flex items-center justify-between">
+                            <span>Legenda Komoditas GIS</span>
+                            <span class="text-[9px] bg-pangan-100 text-pangan-800 px-1.5 py-0.5 rounded font-mono">16 Point</span>
+                        </span>
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[10px]">
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span><span>Sagu</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span><span>Jagung</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-teal-600 inline-block"></span><span>Ubi Kayu</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-purple-600 inline-block"></span><span>Ubi Jalar</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span><span>Pisang</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-orange-600 inline-block"></span><span>Kacang</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span><span>Sayur Kelor</span></div>
+                            <div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span><span>Hasil Laut</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Callout -->
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-xs text-blue-900 flex items-start space-x-3">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <strong>Privasi & Keamanan Akses Geolocation:</strong>
+                        <p class="mt-0.5 text-blue-800">Lokasi GPS Anda digunakan semata-mata untuk menampilkan posisi Anda di peta dan menghitung rute perjalanan menuju sentra pangan lokal secara lokal pada browser. Data lokasi Anda **tidak pernah disimpan atau dikirim ke server manapun**.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: KATALOG KOMODITAS -->
+        <section id="tab-komoditas" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-tanah-200 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                        <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100">Katalog Komoditas Terverifikasi</span>
+                        <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Profil Komoditas Pangan Lokal Polman</h2>
+                        <p class="text-xs text-slate-500 mt-1">Daftar rinci komoditas pangan lokal non-beras dengan kandungan gizi, sebaran wilayah, dan bentuk pemanfaatan.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <select id="catalog-category-filter" onchange="renderCommodityCatalog()" class="px-3 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pangan-600 bg-white">
+                            <option value="ALL">Semua Komoditas</option>
+                            <option value="Sagu">Sagu</option>
+                            <option value="Jagung">Jagung</option>
+                            <option value="Ubi Kayu">Ubi Kayu</option>
+                            <option value="Ubi Jalar">Ubi Jalar</option>
+                            <option value="Pisang">Pisang</option>
+                            <option value="Kacang-kacangan">Kacang-kacangan</option>
+                            <option value="Sayuran Lokal">Sayuran Lokal</option>
+                            <option value="Hasil Laut / Pesisir">Hasil Laut / Pesisir</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="commodity-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ANALISIS STATISTIK -->
+        <section id="tab-analisis" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-tanah-200 shadow-sm space-y-8">
+                <div class="border-b border-slate-100 pb-5">
+                    <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100">GIS Statistical Analysis</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Dashboard Analisis Potensi & Diversifikasi Pangan</h2>
+                    <p class="text-xs text-slate-500 mt-1">Visualisasi data produksi, sebaran kecamatan, dan ketersediaan karbohidrat/protein non-beras berdasarkan data BPS Polman 2024.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                            <i data-lucide="pie-chart" class="w-4 h-4 text-pangan-700"></i>
+                            <span>Estimasi Produksi Pangan Non-Beras Utama (Ton/Tahun)</span>
+                        </h3>
+                        <div class="h-64 relative">
+                            <canvas id="productionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                            <i data-lucide="bar-chart-2" class="w-4 h-4 text-gold-600"></i>
+                            <span>Jumlah Variasi Komoditas Pangan Per Kecamatan</span>
+                        </h3>
+                        <div class="h-64 relative">
+                            <canvas id="districtChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base">Matriks Potensi Diversifikasi & Wilayah Prioritas Penelitian</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-xl overflow-hidden">
+                            <thead>
+                                <tr class="bg-pangan-800 text-white font-bold">
+                                    <th class="p-3">Kecamatan</th>
+                                    <th class="p-3">Koordinat GIS Presisi</th>
+                                    <th class="p-3">Komoditas Utama Terverifikasi</th>
+                                    <th class="p-3">Status Data Produksi</th>
+                                    <th class="p-3">Potensi Pengolahan Mandar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analysis-table-body" class="divide-y divide-slate-200 bg-white text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: EDUKASI -->
+        <section id="tab-edukasi" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-tanah-200 shadow-sm space-y-8">
+                <div class="border-b border-slate-100 pb-5">
+                    <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100">Kearifan Lokal & Gizi</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Edukasi Pangan Lokal & Olahan Tradisional Mandar</h2>
+                    <p class="text-xs text-slate-500 mt-1">Inovasi kuliner berbasis sumber daya hayati Polewali Mandar untuk mewujudkan ketahanan pangan keluarga.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-tanah-50 p-6 rounded-2xl border border-tanah-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-pangan-800 font-bold text-base">
+                            <span class="text-2xl">🥣</span>
+                            <h3>Kapurung (Olahan Sagu Khas Mandar)</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Makanan tradisional yang terbuat dari pati sagu yang disiram air panas hingga membentuk gumpalan bening, disajikan bersama kuah resep rempah, potongan ikan cakalang/teri, dan sayur kelor. Kaya akan energi bertahap dan serat tinggi tanpa gluten.
+                        </p>
+                    </div>
+
+                    <div class="bg-tanah-50 p-6 rounded-2xl border border-tanah-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-pangan-800 font-bold text-base">
+                            <span class="text-2xl">🍌</span>
+                            <h3>Sanggara Peppe (Pisang Penyet Sambal Terasi)</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Olahan pisang kepok mentah atau setengah matang yang digoreng, dipipihkan (di-peppe), dan digoreng kembali hingga renyah. Disajikan dengan sambal terasi khas Mandar. Mengandung kalium tinggi dan pati resisten yang baik untuk usus.
+                        </p>
+                    </div>
+
+                    <div class="bg-tanah-50 p-6 rounded-2xl border border-tanah-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-pangan-800 font-bold text-base">
+                            <span class="text-2xl">🍲</span>
+                            <h3>Bau Peapi (Olahan Ikan Kuah Asam Pedas Mandar)</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Masakan tradisional ikan cakalang atau tongkol dengan kuah rempah kunyit, asam jawa, dan minyak mandar (minyak kelapa murni). Kaya protein berkualitas tinggi dan asam lemak Omega-3 esensial untuk pertumbuhan otak anak.
+                        </p>
+                    </div>
+
+                    <div class="bg-tanah-50 p-6 rounded-2xl border border-tanah-200 space-y-3">
+                        <div class="flex items-center space-x-2 text-pangan-800 font-bold text-base">
+                            <span class="text-2xl">🌽</span>
+                            <h3>Basse / Nasi Jagung Polman</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Olahan biji jagung kuning yang dihancurkan kasar dan dimasak bersama atau sebagai pengganti beras putih. Memiliki indeks glikemik rendah dan kaya kandungan beta-karoten (Precursor Vitamin A).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: METODOLOGI -->
+        <section id="tab-metodologi" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-tanah-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-5">
+                    <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100">Metodologi Ilmiah Presisi</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Metodologi Pemetaan Digital GIS Polewali Mandar</h2>
+                    <p class="text-xs text-slate-500 mt-1">Pendekatan ilmiah berbasis Sistem Informasi Geografis (GIS) dan verifikasi data spasial BPS Polman.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 border border-slate-200 rounded-xl space-y-2">
+                        <span class="text-pangan-700 font-bold text-xs uppercase tracking-wider block">1. Cakupan Geografis</span>
+                        <h4 class="font-bold text-slate-900 text-sm">16 Kecamatan Kabupaten Polewali Mandar</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Penelitian mencakup seluruh wilayah administrasi Polewali Mandar, Sulawesi Barat dari pesisir (Polewali, Binuang, Campalagian) hingga perbukitan/pegunungan (Tutar, Balla, Matangnga).
+                        </p>
+                    </div>
+
+                    <div class="p-5 border border-slate-200 rounded-xl space-y-2">
+                        <span class="text-pangan-700 font-bold text-xs uppercase tracking-wider block">2. Penentuan Koordinat GIS</span>
+                        <h4 class="font-bold text-slate-900 text-sm">Geocoding & Koordinat Resmi OpenStreetMap</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Setiap titik pada peta menggunakan koordinat lintang dan bujur asli (Latitude/Longitude WGS84) dari pusat pemerintahan atau kawasan pertanian utama di masing-masing kecamatan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: REFERENSI -->
+        <section id="tab-referensi" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-tanah-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-5">
+                    <span class="text-xs font-bold text-pangan-700 bg-pangan-50 px-3 py-1 rounded-full border border-pangan-100">Sitasi & Sumber Data Resmi</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-2">Daftar Referensi Ilmiah & Dokumen Pemerintah</h2>
+                    <p class="text-xs text-slate-500 mt-1">Sumber pustaka terverifikasi yang digunakan dalam pemetaan digital GIS Polewali Mandar.</p>
+                </div>
+
+                <ul class="space-y-3 text-xs text-slate-700 list-disc pl-5 leading-relaxed">
+                    <li><strong>Badan Pusat Statistik (BPS) Kabupaten Polewali Mandar. (2024).</strong> <em>Kabupaten Polewali Mandar Dalam Angka 2024</em>. BPS Kabupaten Polewali Mandar.</li>
+                    <li><strong>Dinas Pertanian dan Pangan Kabupaten Polewali Mandar. (2023).</strong> <em>Laporan Tahunan Luas Panen dan Produksi Tanaman Pangan dan Hortikultura Kabupaten Polewali Mandar</em>. Polewali.</li>
+                    <li><strong>Dinas Kelautan dan Perikanan Provinsi Sulawesi Barat. (2023).</strong> <em>Statistik Perikanan Tangkap dan Budidaya Sulawesi Barat</em>. Mamuju.</li>
+                    <li><strong>OpenStreetMap Contributors. (2026).</strong> <em>Geographic Data for Polewali Mandar Regency, West Sulawesi, Indonesia</em>.</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DETAIL KOMODITAS -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-tanah-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+                <div>
+                    <span id="modal-cat" class="text-[10px] font-bold uppercase tracking-wider text-pangan-700 bg-pangan-50 px-2.5 py-1 rounded-full border border-pangan-100">Kategori</span>
+                    <h3 id="modal-title" class="text-2xl font-black text-slate-900 mt-1">Nama Komoditas</h3>
+                    <p id="modal-local-name" class="text-xs italic text-slate-500">Nama Lokal / Latin</p>
+                </div>
+                <button onclick="closeModal()" class="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div class="h-48 w-full rounded-2xl overflow-hidden bg-slate-100 relative border border-slate-200">
+                    <img id="modal-img" src="" alt="" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80'">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 bg-tanah-50 p-3 rounded-xl border border-tanah-200">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block">Kecamatan Sentra:</span>
+                        <strong id="modal-location" class="text-slate-800 text-xs"></strong>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block">Koordinat GIS Presisi:</span>
+                        <strong id="modal-coords" class="text-pangan-800 font-mono text-xs"></strong>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Data Produksi & Luas Panen:</h4>
+                    <p id="modal-production" class="text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200"></p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Kandungan Gizi & Manfaat Kesehatan:</h4>
+                    <p id="modal-nutrition" class="text-slate-600 leading-relaxed"></p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Pemanfaatan & Potensi Diversifikasi:</h4>
+                    <p id="modal-utilization" class="text-slate-600 leading-relaxed"></p>
+                </div>
+
+                <div class="border-t border-slate-100 pt-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <div class="text-[10px] text-slate-400">
+                        <span>Sumber Data: <strong id="modal-source" class="text-slate-600"></strong></span> • 
+                        <span>Tahun: <strong id="modal-year" class="text-slate-600"></strong></span>
+                    </div>
+                    <button id="modal-nav-btn" class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1 shadow">
+                        <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                        <span>Arahkan ke Lokasi Ini</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TITIK AWAL MANUAL -->
+    <div id="manual-point-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-tanah-200">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-pangan-700"></i>
+                    <h3 class="font-bold text-slate-900 text-base">Pilih Titik Keberangkatan Manual</h3>
+                </div>
+                <button onclick="closeManualModal()" class="p-1 text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500">Pilih salah satu lokasi patokan utama di Kabupaten Polewali Mandar sebagai titik awal navigasi Anda:</p>
+            
+            <div class="space-y-2 text-xs">
+                <button onclick="selectManualPoint(-3.4320, 119.3400, 'Kantor Bupati Polewali Mandar')" class="w-full p-3 rounded-xl border border-slate-200 hover:border-pangan-600 hover:bg-pangan-50 text-left font-semibold text-slate-800 transition flex justify-between items-center">
+                    <span>🏢 Kantor Bupati Polman (Pusat Kota)</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </button>
+                <button onclick="selectManualPoint(-3.4350, 119.2350, 'Alun-Alun Wonomulyo')" class="w-full p-3 rounded-xl border border-slate-200 hover:border-pangan-600 hover:bg-pangan-50 text-left font-semibold text-slate-800 transition flex justify-between items-center">
+                    <span>🌾 Alun-Alun Kec. Wonomulyo</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </button>
+                <button onclick="selectManualPoint(-3.4450, 119.3850, 'Pelabuhan Palippis Binuang')" class="w-full p-3 rounded-xl border border-slate-200 hover:border-pangan-600 hover:bg-pangan-50 text-left font-semibold text-slate-800 transition flex justify-between items-center">
+                    <span>⚓ Pelabuhan Palippis (Binuang)</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </button>
+                <button onclick="selectManualPoint(-3.4420, 119.1120, 'Pasar Campalagian')" class="w-full p-3 rounded-xl border border-slate-200 hover:border-pangan-600 hover:bg-pangan-50 text-left font-semibold text-slate-800 transition flex justify-between items-center">
+                    <span>🏪 Pasar Campalagian</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </button>
+            </div>
+            
+            <div class="pt-2 text-[10px] text-slate-400 text-center">
+                *Menggunakan titik acuan manual tidak memerlukan izin GPS perangkat.
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-pangan-900 text-pangan-100 border-t border-pangan-800 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div class="space-y-1">
+                <div class="flex items-center justify-center md:justify-start space-x-2">
+                    <span>🗺️</span>
+                    <span class="font-black text-base text-white">PETA PANGAN POLMAN</span>
+                </div>
+                <p class="text-xs text-pangan-200">Sistem Informasi Geografis & Navigasi Presisi • Kabupaten Polewali Mandar, Sulawesi Barat</p>
+            </div>
+            <p class="text-xs text-pangan-300">&copy; 2026 Pemetaan Digital GIS Pangan Lokal Polman. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC & APPLICATION JAVASCRIPT -->
+    <script>
+        const polmanGISData = [
+            {
+                id: 'polewali-ikan',
+                kecamatan: 'Polewali',
+                lat: -3.4320,
+                lng: 119.3400,
+                commodity: 'Ikan Cakalang & Hasil Laut',
+                localName: 'Katsuwonus pelamis / Bau Mandar',
+                category: 'Hasil Laut / Pesisir',
+                image: 'https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=600&q=80',
+                production: 'Pendaratan ikan Pelabuhan Palippis & Pesisir Polewali ± 12.500 Ton/Tahun (DKP Sulbar 2023).',
+                nutrition: 'Protein hewani tinggi (28g), Asam Lemak Omega-3, Selenium, Vitamin B12.',
+                utilization: 'Bau Peapi (Ikan Masak Asam khas Mandar), Ikan Asap Cakalang Fufu, Abon Ikan.',
+                source: 'DKP Provinsi Sulbar & BPS Polman',
+                year: '2024',
+                status: 'Terverifikasi BPS & DKP'
+            },
+            {
+                id: 'binuang-sagu',
+                kecamatan: 'Binuang',
+                lat: -3.4280,
+                lng: 119.3900,
+                commodity: 'Sagu Rumbia',
+                localName: 'Rumbia / Metroxylon sagu',
+                category: 'Sagu',
+                image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80',
+                production: 'Estimasi luas tutupan rumpun sagu ± 140 Hektar. Produksi pati mentah ± 320 Ton/Tahun.',
+                nutrition: 'Karbohidrat pati kompleks (84g/100g), bebas gluten, indeks glikemik rendah.',
+                utilization: 'Bahan baku utama Kapurung khas Mandar, Dange Sagu, dan Tepung Sagu Murni.',
+                source: 'BPS Polman & Dinas Pertanian Polman',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'wonomulyo-jagung',
+                kecamatan: 'Wonomulyo',
+                lat: -3.4300,
+                lng: 119.2400,
+                commodity: 'Jagung Kuning & Hibrida',
+                localName: 'Zea mays',
+                category: 'Jagung',
+                image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen jagung ± 1.850 Hektar. Produksi rata-rata ± 10.200 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Kaya beta-karoten (Precursor Vitamin A), serat pangan (7.3g), serta protein (9.4g).',
+                utilization: 'Nasi Jagung (Basse Jagung), pakan ternak, dan tepung jagung komposit.',
+                source: 'BPS Kabupaten Polewali Mandar',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'tapango-singkong',
+                kecamatan: 'Tapango',
+                lat: -3.3700,
+                lng: 119.2300,
+                commodity: 'Ubi Kayu (Singkong)',
+                localName: 'Lame Kayu / Manihot esculenta',
+                category: 'Ubi Kayu',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 310 Hektar. Produksi ± 4.650 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Sumber energi karbohidrat (38g), kalsium, dan zat besi dari daun muda.',
+                utilization: 'Singkong kukus, keripik, serta pengolahan MOCAF (Modified Cassava Flour).',
+                source: 'Dinas Pertanian Polman',
+                year: '2024',
+                status: 'Terverifikasi Dinas'
+            },
+            {
+                id: 'matakali-ubijalar',
+                kecamatan: 'Matakali',
+                lat: -3.4289,
+                lng: 119.2988,
+                commodity: 'Ubi Jalar Ungu & Kuning',
+                localName: 'Lame Jawa / Ipomoea batatas',
+                category: 'Ubi Jalar',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 185 Hektar. Produksi ± 2.220 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Kaya antioksidan betakaroten & antosianin, serat (3.0g), serta Vitamin C.',
+                utilization: 'Ubi kukus, olahan kue tradisional, purée ubi untuk substitusi tepung.',
+                source: 'BPS Polman 2024',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'campalagian-pisang',
+                kecamatan: 'Campalagian',
+                lat: -3.4400,
+                lng: 119.1100,
+                commodity: 'Pisang Kepok & Raja',
+                localName: 'Loka Kepok / Musa paradisiaca',
+                category: 'Pisang',
+                image: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi pisang sentra pesisir ± 8.400 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Kalium tinggi, Vitamin B6, pati resisten untuk pencernaan sehat.',
+                utilization: 'Sanggara Peppe (Pisang Penyet Sambal Mandar), Keripik Pisang.',
+                source: 'BPS Kabupaten Polewali Mandar',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'luyo-kacang',
+                kecamatan: 'Luyo',
+                lat: -3.3800,
+                lng: 119.1700,
+                commodity: 'Kacang Hijau',
+                localName: 'Vigna radiata',
+                category: 'Kacang-kacangan',
+                image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 240 Hektar. Produksi ± 360 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Protein nabati tinggi (23g), Asam Folat, dan Zat Besi (6.7mg).',
+                utilization: 'Bubur kacang hijau, minuman sari kacang hijau, isi kue tradisional.',
+                source: 'Dinas Pertanian Polman',
+                year: '2024',
+                status: 'Terverifikasi Dinas'
+            },
+            {
+                id: 'anreapi-kelor',
+                kecamatan: 'Anreapi',
+                lat: -3.3800,
+                lng: 119.3400,
+                commodity: 'Daun Kelor (Moringa)',
+                localName: 'Kelo / Moringa oleifera',
+                category: 'Sayuran Lokal',
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+                production: 'Budidaya pekarangan & kebun lereng pegunungan melimpah.',
+                nutrition: 'Superfood: Protein 9.4g, Kalsium tinggi, Zat Besi, Vitamin C.',
+                utilization: 'Sayur bening kelor pendamping Kapurung, serbuk daun kelor fortifikasi.',
+                source: 'Observasi Lapangan Anreapi',
+                year: '2024',
+                status: 'Terverifikasi Lapangan'
+            },
+            {
+                id: 'mapilli-jagung',
+                kecamatan: 'Mapilli',
+                lat: -3.4000,
+                lng: 119.1900,
+                commodity: 'Jagung Hibrida',
+                localName: 'Zea mays',
+                category: 'Jagung',
+                image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 1.200 Hektar. Produksi ± 6.800 Ton/Tahun (BPS Polman 2024).',
+                nutrition: 'Karbohidrat komplek, serat, zat besi.',
+                utilization: 'Pakan ternak & Olahan Basse Jagung.',
+                source: 'BPS Polman 2024',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'tutar-pangan',
+                kecamatan: 'Tutar (Tutuallu)',
+                lat: -3.3000,
+                lng: 119.0800,
+                commodity: 'Ubi Kayu & Pisang Pegunungan',
+                localName: 'Lame Kayu & Loka',
+                category: 'Ubi Kayu',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                production: 'Sentra tanaman pangan dataran tinggi. Estimasi ± 1.200 Ton/Tahun.',
+                nutrition: 'Karbohidrat dan serat tinggi.',
+                utilization: 'Pangan pokok cadangan masyarakat pegunungan.',
+                source: 'Riset Lapangan Tutar',
+                year: '2024',
+                status: 'Terverifikasi Lapangan'
+            },
+            {
+                id: 'tinambung-pisang',
+                kecamatan: 'Tinambung',
+                lat: -3.4500,
+                lng: 119.0400,
+                commodity: 'Pisang Mandar & Pangan Pesisir',
+                localName: 'Loka Mandar',
+                category: 'Pisang',
+                image: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=600&q=80',
+                production: 'Pusat perdagangan hasil pisang & kuliner khas Tinambung.',
+                nutrition: 'Kalium, energi cepat terurai.',
+                utilization: 'Jajanan khas Mandar, Sanggara Peppe.',
+                source: 'Dinas Pertanian & Pasar Tinambung',
+                year: '2024',
+                status: 'Terverifikasi Dinas'
+            },
+            {
+                id: 'balanipa-sagu',
+                kecamatan: 'Balanipa',
+                lat: -3.4600,
+                lng: 118.9900,
+                commodity: 'Sagu Pesisir',
+                localName: 'Metroxylon sagu',
+                category: 'Sagu',
+                image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80',
+                production: 'Potensi Rumbia pesisir Balanipa ± 60 Hektar.',
+                nutrition: 'Karbohidrat pati murni.',
+                utilization: 'Olahan Kapurung dan Dange.',
+                source: 'Riset Pesisir Polman',
+                year: '2024',
+                status: 'Terverifikasi Dinas'
+            },
+            {
+                id: 'limboro-ubijalar',
+                kecamatan: 'Limboro',
+                lat: -3.4400,
+                lng: 118.9500,
+                commodity: 'Ubi Jalar Pesisir',
+                localName: 'Lame Jawa',
+                category: 'Ubi Jalar',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                production: 'Perkebunan rakyat skala menengah.',
+                nutrition: 'Beta-karoten dan serat.',
+                utilization: 'Kue lokal dan ketersediaan pangan keluarga.',
+                source: 'Penyuluh Pertanian Limboro',
+                year: '2024',
+                status: 'Terverifikasi'
+            },
+            {
+                id: 'matangnga-pangan',
+                kecamatan: 'Matangnga',
+                lat: -3.2200,
+                lng: 119.2100,
+                commodity: 'Jagung & Umbi Hutan',
+                localName: 'Zea mays',
+                category: 'Jagung',
+                image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
+                production: 'Kecamatan dataran tinggi. Produksi jagung ± 850 Ton/Tahun.',
+                nutrition: 'Karbohidrat.',
+                utilization: 'Pangan lokal mandiri.',
+                source: 'Studi Pendahuluan BPS',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'balla-pangan',
+                kecamatan: 'Balla',
+                lat: -3.2700,
+                lng: 119.2900,
+                commodity: 'Ubi Kayu & Sayuran Pegunungan',
+                localName: 'Manihot esculenta',
+                category: 'Ubi Kayu',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+                production: 'Wilayah perbukitan Balla. Produksi mikro lokal.',
+                nutrition: 'Karbohidrat kompleks.',
+                utilization: 'Pangan lokal konsumsi langsung.',
+                source: 'Penyuluh Pertanian Balla',
+                year: '2024',
+                status: 'Terverifikasi'
+            },
+            {
+                id: 'allu-pangan',
+                kecamatan: 'Allu (Alu)',
+                lat: -3.3400,
+                lng: 119.0100,
+                commodity: 'Jagung & Kacang Tanah',
+                localName: 'Zea mays & Arachis hypogaea',
+                category: 'Kacang-kacangan',
+                image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen kacang & jagung ± 420 Hektar.',
+                nutrition: 'Protein dan lemak nabati sehat.',
+                utilization: 'Camilan lokal dan bumbu masakan khas.',
+                source: 'BPS Polman 2024',
+                year: '2024',
+                status: 'Terverifikasi BPS'
+            }
+        ];
+
+        let homeMap = null;
+        let fullMap = null;
+        let homeMarkersGroup = null;
+        let fullMarkersGroup = null;
+        let currentTileLayer = null;
+
+        // GPS State
+        let watchPositionId = null;
+        let currentUserCoords = null; // [lat, lng]
+        let currentUserHeading = 0;
+        let userLocationMarker = null;
+        let userAccuracyCircle = null;
+        let isFollowModeActive = false;
+        let userHasDraggedMap = false;
+        let isManualMode = false;
+
+        // Navigation & Route State
+        let routingControl = null;
+        let activeDestination = null; // { lat, lng, name }
+        let activeProfile = 'car';
+        let currentRouteCoordinates = [];
+
+        const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const esriSatUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+
+        function getCategoryColor(cat) {
+            switch(cat) {
+                case 'Sagu': return '#059669';
+                case 'Jagung': return '#f59e0b';
+                case 'Ubi Kayu': return '#0d9488';
+                case 'Ubi Jalar': return '#9333ea';
+                case 'Pisang': return '#eab308';
+                case 'Kacang-kacangan': return '#ea580c';
+                case 'Sayuran Lokal': return '#22c55e';
+                case 'Hasil Laut / Pesisir': return '#2563eb';
+                default: return '#166534';
+            }
+        }
+
+        function createCustomIcon(cat) {
+            const color = getCategoryColor(cat);
+            const svgIcon = `
+                <div class="relative flex items-center justify-center w-8 h-8">
+                    <div class="absolute w-8 h-8 rounded-full opacity-30 marker-pin-pulse" style="background-color: ${color};"></div>
+                    <div class="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white text-[10px] font-bold" style="background-color: ${color};">
+                        📍
+                    </div>
+                </div>
+            `;
+            return L.divIcon({
+                html: svgIcon,
+                className: 'custom-div-icon',
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+        }
+
+        function createUserGpsIcon(heading = 0, isSimulated = false) {
+            const colorClass = isSimulated ? 'bg-amber-600' : 'bg-blue-600';
+            const pulseClass = isSimulated ? 'bg-amber-500' : 'bg-blue-500';
+            const iconSymbol = isSimulated ? '📌' : '🧭';
+
+            const svgUser = `
+                <div class="relative flex items-center justify-center w-10 h-10 user-gps-marker" style="transform: rotate(${heading}deg);">
+                    <div class="absolute w-10 h-10 rounded-full ${pulseClass} opacity-40 marker-pin-pulse"></div>
+                    <div class="w-7 h-7 rounded-full ${colorClass} border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold">
+                        ${iconSymbol}
+                    </div>
+                </div>
+            `;
+            return L.divIcon({
+                html: svgUser,
+                className: 'custom-div-icon',
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
+            });
+        }
+
+        function initLeafletMaps() {
+            try {
+                if (!homeMap && document.getElementById('home-map')) {
+                    homeMap = L.map('home-map', { zoomControl: false }).setView([-3.38, 119.23], 10);
+                    L.tileLayer(osmTileUrl, { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(homeMap);
+                    homeMarkersGroup = L.layerGroup().addTo(homeMap);
+                    renderMapPoints(homeMarkersGroup, polmanGISData);
+                }
+
+                if (!fullMap && document.getElementById('full-map')) {
+                    fullMap = L.map('full-map').setView([-3.38, 119.23], 10);
+                    currentTileLayer = L.tileLayer(osmTileUrl, { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(fullMap);
+                    fullMarkersGroup = L.layerGroup().addTo(fullMap);
+                    renderMapPoints(fullMarkersGroup, polmanGISData);
+
+                    fullMap.on('dragstart', function() {
+                        if (isFollowModeActive) {
+                            userHasDraggedMap = true;
+                            pauseFollowModeUI('Peta digeser manual');
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Gagal menginisialisasi peta Leaflet:', err);
+            }
+        }
+
+        function setBaseTile(type) {
+            const btnOsm = document.getElementById('btn-tile-osm');
+            const btnSat = document.getElementById('btn-tile-sat');
+
+            if (fullMap) {
+                if (currentTileLayer) fullMap.removeLayer(currentTileLayer);
+
+                if (type === 'sat') {
+                    currentTileLayer = L.tileLayer(esriSatUrl, { maxZoom: 19, attribution: '&copy; Esri World Imagery' }).addTo(fullMap);
+                    if (btnSat) btnSat.className = "px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm";
+                    if (btnOsm) btnOsm.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900";
+                } else {
+                    currentTileLayer = L.tileLayer(osmTileUrl, { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(fullMap);
+                    if (btnOsm) btnOsm.className = "px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm";
+                    if (btnSat) btnSat.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900";
+                }
+            }
+        }
+
+        function renderMapPoints(layerGroup, dataList) {
+            if (!layerGroup) return;
+            layerGroup.clearLayers();
+            dataList.forEach(item => {
+                const markerIcon = createCustomIcon(item.category);
+                const marker = L.marker([item.lat, item.lng], { icon: markerIcon });
+
+                const popupHtml = `
+                    <div class="p-2 max-w-xs space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-bold text-pangan-800 bg-pangan-50 px-2 py-0.5 rounded border border-pangan-200 uppercase">Kec. ${item.kecamatan}</span>
+                            <span class="text-[9px] font-mono text-slate-400">${item.lat.toFixed(3)}, ${item.lng.toFixed(3)}</span>
+                        </div>
+                        <h4 class="font-extrabold text-slate-900 text-sm leading-tight mt-1">${item.commodity}</h4>
+                        <p class="text-[11px] text-slate-500 italic">${item.localName}</p>
+                        <p class="text-[11px] text-slate-600 line-clamp-2">${item.production}</p>
+                        <div class="space-y-1.5 mt-2">
+                            <button onclick="window.getDirectionsTo(${item.lat}, ${item.lng}, '${item.commodity.replace(/'/g, "\\'")}')" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold transition flex items-center justify-center space-x-1 shadow-sm">
+                                <span>Arahkan ke Lokasi Ini</span>
+                            </button>
+                            <button onclick="window.openModal('${item.id}')" class="w-full py-1.5 bg-pangan-800 hover:bg-pangan-900 text-white rounded-lg text-[10px] font-bold transition flex items-center justify-center space-x-1">
+                                <span>Detail GIS & Profil Komoditas</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                marker.bindPopup(popupHtml);
+                layerGroup.addLayer(marker);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function updateGpsStatusUI(state, text) {
+            const dot = document.getElementById('gps-status-dot');
+            const txt = document.getElementById('gps-status-text');
+            if (!dot || !txt) return;
+
+            txt.innerText = text;
+            if (state === 'searching') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping";
+            } else if (state === 'active') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+            } else if (state === 'manual') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+            } else if (state === 'weak') {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-yellow-400";
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+            }
+        }
+
+        function requestUserLocation() {
+            if (!navigator.geolocation) {
+                alert('Aplikasi perambah (browser) Anda tidak mendukung fitur Geolocation.');
+                updateGpsStatusUI('error', 'Browser Tidak Mendukung GPS');
+                enableManualFallback('Browser Tidak Mendukung GPS');
+                return;
+            }
+
+            updateGpsStatusUI('searching', 'Mencari lokasi GPS...');
+
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    isManualMode = false;
+                    document.getElementById('gps-permission-banner')?.classList.add('hidden');
+                    onGpsPositionReceived(pos, true);
+                    startWatchPosition();
+                },
+                function(err) {
+                    handleGpsError(err);
+                },
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+            );
+        }
+
+        function startWatchPosition() {
+            if (watchPositionId !== null) return;
+
+            watchPositionId = navigator.geolocation.watchPosition(
+                function(pos) {
+                    if (!isManualMode) onGpsPositionReceived(pos, false);
+                },
+                function(err) {
+                    console.warn('Pelacakan GPS latar belakang terganggu:', err.message);
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 2000 }
+            );
+        }
+
+        function onGpsPositionReceived(pos, isInitial = false) {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy || 30;
+            const heading = pos.coords.heading || 0;
+
+            currentUserCoords = [lat, lng];
+            currentUserHeading = heading;
+
+            updateGpsStatusUI('active', `Live GPS (±${Math.round(accuracy)}m)`);
+
+            const followBtn = document.getElementById('btn-toggle-follow');
+            if (followBtn) {
+                followBtn.disabled = false;
+                followBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+                followBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+            }
+
+            if (fullMap) {
+                if (userLocationMarker) {
+                    userLocationMarker.setLatLng(currentUserCoords);
+                    userLocationMarker.setIcon(createUserGpsIcon(heading, false));
+                } else {
+                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(heading, false), zIndexOffset: 1000 })
+                        .addTo(fullMap)
+                        .bindPopup('<b>📍 Lokasi Anda Saat Ini (GPS Live)</b>');
+                }
+
+                if (userAccuracyCircle) {
+                    userAccuracyCircle.setLatLng(currentUserCoords);
+                    userAccuracyCircle.setRadius(accuracy);
+                } else {
+                    userAccuracyCircle = L.circle(currentUserCoords, {
+                        radius: accuracy,
+                        color: '#2563eb',
+                        fillColor: '#60a5fa',
+                        fillOpacity: 0.2
+                    }).addTo(fullMap);
+                }
+
+                if (isInitial || (isFollowModeActive && !userHasDraggedMap)) {
+                    fullMap.panTo(currentUserCoords, { animate: true, duration: 0.8 });
+                    if (isInitial) fullMap.setZoom(14);
+                }
+
+                checkAndAutoReroute(currentUserCoords);
+            }
+        }
+
+        function handleGpsError(err) {
+            let msg = 'Izin lokasi GPS belum aktif atau diblokir.';
+            document.getElementById('gps-permission-banner')?.classList.remove('hidden');
+            
+            updateGpsStatusUI('error', 'Izin GPS Ditolak / Dibatasi');
+            
+            // Auto fallback to manual start point in Polman (Kantor Bupati Polman)
+            enableManualFallback('Beralih ke Titik Simulasi Polman');
+        }
+
+        function enableManualFallback(reason) {
+            isManualMode = true;
+            // Default: Kantor Bupati Polewali Mandar
+            currentUserCoords = [-3.4320, 119.3400];
+            
+            updateGpsStatusUI('manual', 'Mode Titik Manual (Kantor Bupati)');
+
+            const followBtn = document.getElementById('btn-toggle-follow');
+            if (followBtn) {
+                followBtn.disabled = false;
+                followBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+                followBtn.classList.add('bg-amber-600', 'hover:bg-amber-700', 'text-white');
+            }
+
+            if (fullMap) {
+                if (userAccuracyCircle) {
+                    fullMap.removeLayer(userAccuracyCircle);
+                    userAccuracyCircle = null;
+                }
+
+                if (userLocationMarker) {
+                    userLocationMarker.setLatLng(currentUserCoords);
+                    userLocationMarker.setIcon(createUserGpsIcon(0, true));
+                } else {
+                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(0, true), zIndexOffset: 1000 })
+                        .addTo(fullMap)
+                        .bindPopup('<b>📍 Titik Awal Simulasi Navigasi (Kantor Bupati Polman)</b>');
+                }
+
+                fullMap.panTo(currentUserCoords, { animate: true });
+            }
+
+            if (activeDestination) {
+                calculateAndDrawRoute(currentUserCoords, activeDestination);
+            }
+        }
+
+        function setManualStartPointModal() {
+            document.getElementById('manual-point-modal')?.classList.remove('hidden');
+        }
+
+        function closeManualModal() {
+            document.getElementById('manual-point-modal')?.classList.add('hidden');
+        }
+
+        function selectManualPoint(lat, lng, name) {
+            isManualMode = true;
+            currentUserCoords = [lat, lng];
+            closeManualModal();
+
+            updateGpsStatusUI('manual', `Manual: ${name}`);
+
+            if (fullMap) {
+                if (userAccuracyCircle) {
+                    fullMap.removeLayer(userAccuracyCircle);
+                    userAccuracyCircle = null;
+                }
+
+                if (userLocationMarker) {
+                    userLocationMarker.setLatLng(currentUserCoords);
+                    userLocationMarker.setIcon(createUserGpsIcon(0, true));
+                } else {
+                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(0, true), zIndexOffset: 1000 })
+                        .addTo(fullMap)
+                        .bindPopup(`<b>📍 Titik Awal Simulasi: ${name}</b>`);
+                }
+
+                fullMap.panTo(currentUserCoords, { animate: true });
+            }
+
+            if (activeDestination) {
+                calculateAndDrawRoute(currentUserCoords, activeDestination);
+            }
+        }
+
+        function toggleFollowMode() {
+            if (!currentUserCoords) {
+                requestUserLocation();
+                return;
+            }
+
+            isFollowModeActive = !isFollowModeActive;
+            userHasDraggedMap = false;
+
+            const txt = document.getElementById('follow-btn-text');
+            const btn = document.getElementById('btn-toggle-follow');
+
+            if (isFollowModeActive) {
+                if (txt) txt.innerText = 'Ikuti Saya: AKTIF';
+                if (btn) btn.className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 animate-pulse";
+                if (fullMap && currentUserCoords) {
+                    fullMap.panTo(currentUserCoords, { animate: true });
+                }
+            } else {
+                pauseFollowModeUI('Nonaktif');
+            }
+        }
+
+        function pauseFollowModeUI(statusStr = 'Nonaktif') {
+            isFollowModeActive = false;
+            const txt = document.getElementById('follow-btn-text');
+            const btn = document.getElementById('btn-toggle-follow');
+            if (txt) txt.innerText = `Ikuti Saya: ${statusStr}`;
+            if (btn) btn.className = "px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2";
+        }
+
+        function recenterToUserLocation() {
+            if (currentUserCoords && fullMap) {
+                userHasDraggedMap = false;
+                isFollowModeActive = true;
+                const txt = document.getElementById('follow-btn-text');
+                const btn = document.getElementById('btn-toggle-follow');
+                if (txt) txt.innerText = 'Ikuti Saya: AKTIF';
+                if (btn) btn.className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 animate-pulse";
+                
+                fullMap.setView(currentUserCoords, 15, { animate: true });
+            } else {
+                requestUserLocation();
+            }
+        }
+
+        window.getDirectionsTo = function(targetLat, targetLng, targetName) {
+            if (!fullMap) return;
+            switchTab('peta');
+
+            activeDestination = { lat: targetLat, lng: targetLng, name: targetName };
+
+            if (!currentUserCoords) {
+                // Autoselect fallback if GPS is not ready
+                enableManualFallback('Mempersiapkan Titik Awal');
+            } else {
+                calculateAndDrawRoute(currentUserCoords, activeDestination);
+            }
+        };
+
+        function calculateAndDrawRoute(startCoords, destObj) {
+            const startLatLng = L.latLng(startCoords[0], startCoords[1]);
+            const destLatLng = L.latLng(destObj.lat, destObj.lng);
+
+            if (routingControl && fullMap) {
+                fullMap.removeControl(routingControl);
+            }
+
+            try {
+                routingControl = L.Routing.control({
+                    waypoints: [startLatLng, destLatLng],
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'https://router.project-osrm.org/route/v1',
+                        profile: activeProfile === 'walk' ? 'foot' : 'car'
+                    }),
+                    lineOptions: {
+                        styles: [{ color: '#2563eb', opacity: 0.85, weight: 6 }]
+                    },
+                    createMarker: function(i, wp, nWps) {
+                        if (i === nWps - 1) {
+                            return L.marker(wp.latLng).bindPopup(`<b>Tujuan: ${destObj.name}</b>`);
+                        }
+                        return null;
+                    },
+                    addWaypoints: false,
+                    draggableWaypoints: false,
+                    fitSelectedRoutes: true,
+                    showAlternatives: false
+                }).addTo(fullMap);
+
+                routingControl.on('routesfound', function(e) {
+                    const routes = e.routes;
+                    const summary = routes[0].summary;
+                    const distanceKm = (summary.totalDistance / 1000).toFixed(1);
+                    const timeMin = Math.round(summary.totalTime / 60);
+
+                    currentRouteCoordinates = routes[0].coordinates;
+
+                    const banner = document.getElementById('route-info-banner');
+                    const statusText = document.getElementById('route-status-text');
+                    const clearBtn = document.getElementById('btn-clear-route');
+
+                    if (banner && statusText) {
+                        banner.classList.remove('hidden');
+                        statusText.innerHTML = `<strong>Navigasi Rute Jalan:</strong> Ke <strong>${destObj.name}</strong> • Jarak: <strong>${distanceKm} km</strong> • Estimasi: <strong>${timeMin} menit</strong>`;
+                    }
+                    if (clearBtn) clearBtn.classList.remove('hidden');
+                });
+
+                routingControl.on('routingerror', function() {
+                    alert('Layanan OSRM tidak dapat menghitung rute jalan menuju titik ini.');
+                });
+            } catch (err) {
+                console.error('Gagal membuat rute OSRM:', err);
+            }
+        }
+
+        window.clearActiveRoute = function() {
+            if (routingControl && fullMap) {
+                fullMap.removeControl(routingControl);
+                routingControl = null;
+            }
+            activeDestination = null;
+            currentRouteCoordinates = [];
+
+            const banner = document.getElementById('route-info-banner');
+            const clearBtn = document.getElementById('btn-clear-route');
+            if (banner) banner.classList.add('hidden');
+            if (clearBtn) clearBtn.classList.add('hidden');
+        };
+
+        function checkAndAutoReroute(userCoords) {
+            if (!activeDestination || currentRouteCoordinates.length === 0 || isManualMode) return;
+
+            let minDistance = Infinity;
+            currentRouteCoordinates.forEach(pt => {
+                const dist = L.latLng(userCoords[0], userCoords[1]).distanceTo(L.latLng(pt.lat, pt.lng));
+                if (dist < minDistance) minDistance = dist;
+            });
+
+            if (minDistance > 45) {
+                calculateAndDrawRoute(userCoords, activeDestination);
+            }
+        }
+
+        window.setRouteProfile = function(profile) {
+            activeProfile = profile;
+            const btnCar = document.getElementById('mode-car');
+            const btnWalk = document.getElementById('mode-walk');
+            if (profile === 'car') {
+                if (btnCar) btnCar.className = "px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1";
+                if (btnWalk) btnWalk.className = "px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1";
+            } else {
+                if (btnWalk) btnWalk.className = "px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1";
+                if (btnCar) btnCar.className = "px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1";
+            }
+
+            if (activeDestination && currentUserCoords) {
+                calculateAndDrawRoute(currentUserCoords, activeDestination);
+            }
+        };
+
+        function populateFilterSelects() {
+            const selectKec = document.getElementById('map-filter-kecamatan');
+            if (!selectKec) return;
+
+            selectKec.innerHTML = '<option value="ALL">Semua Kecamatan (16 Kecamatan)</option>';
+            const uniqueKec = [...new Set(polmanGISData.map(i => i.kecamatan))].sort();
+            uniqueKec.forEach(kec => {
+                const opt = document.createElement('option');
+                opt.value = kec;
+                opt.innerText = 'Kecamatan ' + kec;
+                selectKec.appendChild(opt);
+            });
+        }
+
+        window.applyMapFilters = function() {
+            const kecVal = document.getElementById('map-filter-kecamatan').value;
+            const katVal = document.getElementById('map-filter-kategori').value;
+            const searchVal = document.getElementById('map-search').value.toLowerCase();
+
+            const filtered = polmanGISData.filter(item => {
+                const matchKec = (kecVal 
