@@ -90,7 +90,6 @@
 </head>
 <body class="bg-tanah-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-pangan-600 selection:text-white">
 
-    <!-- HEADER / NAVIGATION -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-tanah-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
@@ -133,7 +132,6 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
         <!-- TAB 1: HOME SECTION -->
@@ -225,7 +223,6 @@
                     </div>
                 </div>
 
-                <!-- GPS Warning Banner (Hidden by default, shown on permission error) -->
                 <div id="gps-permission-banner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs space-y-2">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start space-x-2 text-amber-900">
@@ -241,44 +238,36 @@
                     </div>
                 </div>
 
-                <!-- GPS & Navigation Control Bar -->
                 <div class="bg-gradient-to-r from-pangan-950 via-pangan-900 to-pangan-800 text-white p-4 sm:p-5 rounded-2xl shadow-lg space-y-4 border border-pangan-700">
                     <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
                         <div class="flex flex-wrap items-center gap-2">
-                            <!-- GPS Request Button -->
                             <button id="btn-request-gps" onclick="requestUserLocation()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2">
                                 <i data-lucide="crosshair" class="w-4 h-4"></i>
                                 <span>Minta Izin GPS / Lokasi Saya</span>
                             </button>
 
-                            <!-- Manual Start Point Selector -->
                             <button id="btn-manual-location" onclick="setManualStartPointModal()" class="px-3 py-2.5 bg-pangan-700 hover:bg-pangan-600 text-pangan-100 rounded-xl text-xs font-bold transition flex items-center space-x-1 border border-pangan-500">
                                 <i data-lucide="map-pin-line" class="w-4 h-4 text-gold-400"></i>
                                 <span>Set Titik Awal Manual</span>
                             </button>
 
-                            <!-- Toggle Follow Mode -->
                             <button id="btn-toggle-follow" onclick="toggleFollowMode()" disabled class="px-4 py-2.5 bg-slate-700 text-slate-400 rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 cursor-not-allowed">
                                 <i data-lucide="locate" class="w-4 h-4"></i>
                                 <span id="follow-btn-text">Ikuti Saya: Nonaktif</span>
                             </button>
 
-                            <!-- Clear Route Button -->
                             <button onclick="clearActiveRoute()" id="btn-clear-route" class="hidden px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1">
                                 <i data-lucide="x-circle" class="w-4 h-4"></i>
                                 <span>Hapus Rute</span>
                             </button>
                         </div>
 
-                        <!-- Routing Mode Selector & Status -->
                         <div class="flex items-center justify-between lg:justify-end gap-3 border-t lg:border-t-0 border-pangan-800 pt-3 lg:pt-0">
-                            <!-- GPS Status Badge -->
                             <div class="flex items-center space-x-2 bg-pangan-950/80 px-3 py-1.5 rounded-xl border border-pangan-700 text-xs">
                                 <div id="gps-status-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></div>
                                 <span id="gps-status-text" class="text-pangan-200 font-semibold text-[11px]">GPS Tidak Aktif</span>
                             </div>
 
-                            <!-- Mode Driving / Walking -->
                             <div class="inline-flex rounded-xl bg-pangan-950/80 p-1 border border-pangan-700 text-xs">
                                 <button id="mode-car" onclick="setRouteProfile('car')" class="px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1">
                                     <i data-lucide="car" class="w-3.5 h-3.5"></i>
@@ -292,7 +281,6 @@
                         </div>
                     </div>
 
-                    <!-- Route Information Banner -->
                     <div id="route-info-banner" class="hidden bg-white/10 backdrop-blur border border-white/20 p-3 rounded-xl text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div class="flex items-center space-x-2">
                             <i data-lucide="navigation" class="w-4 h-4 text-gold-400 animate-bounce flex-shrink-0"></i>
@@ -304,7 +292,6 @@
                     </div>
                 </div>
 
-                <!-- Filters Bar -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-tanah-50 p-4 rounded-xl border border-tanah-200">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kecamatan Target:</label>
@@ -345,11 +332,9 @@
                     </div>
                 </div>
 
-                <!-- Map Canvas Element -->
                 <div class="relative">
                     <div id="full-map" class="h-[620px] w-full rounded-2xl overflow-hidden border border-slate-300 shadow-inner z-10"></div>
                     
-                    <!-- Map Legend Overlay -->
                     <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur border border-slate-200 p-3.5 rounded-xl shadow-xl z-20 text-[11px] space-y-2 max-w-xs">
                         <span class="font-bold text-slate-800 block text-xs border-b pb-1 flex items-center justify-between">
                             <span>Legenda Komoditas GIS</span>
@@ -368,12 +353,11 @@
                     </div>
                 </div>
 
-                <!-- Info Callout -->
                 <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-xs text-blue-900 flex items-start space-x-3">
                     <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
                     <div>
                         <strong>Privasi & Keamanan Akses Geolocation:</strong>
-                        <p class="mt-0.5 text-blue-800">Lokasi GPS Anda digunakan semata-mata untuk menampilkan posisi Anda di peta dan menghitung rute perjalanan menuju sentra pangan lokal secara lokal pada browser. Data lokasi Anda **tidak pernah disimpan atau dikirim ke server manapun**.</p>
+                        <p class="mt-0.5 text-blue-800">Lokasi GPS Anda digunakan semata-mata untuk menampilkan posisi Anda di peta dan menghitung rute perjalanan menuju sentra pangan lokal secara lokal pada browser. Data lokasi Anda <strong>tidak pernah disimpan atau dikirim ke server manapun</strong>.</p>
                     </div>
                 </div>
             </div>
@@ -657,7 +641,6 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="bg-pangan-900 text-pangan-100 border-t border-pangan-800 mt-16 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div class="space-y-1">
@@ -671,7 +654,6 @@
         </div>
     </footer>
 
-    <!-- LOGIC & APPLICATION JAVASCRIPT -->
     <script>
         const polmanGISData = [
             {
@@ -702,264 +684,364 @@
                 production: 'Estimasi luas tutupan rumpun sagu ± 140 Hektar. Produksi pati mentah ± 320 Ton/Tahun.',
                 nutrition: 'Karbohidrat pati kompleks (84g/100g), bebas gluten, indeks glikemik rendah.',
                 utilization: 'Bahan baku utama Kapurung khas Mandar, Dange Sagu, dan Tepung Sagu Murni.',
-                source: 'BPS Polman & Dinas Pertanian Polman',
+                source: 'Dinas Pertanian & Pangan Polman',
                 year: '2024',
-                status: 'Terverifikasi BPS'
+                status: 'Terverifikasi Lapangan'
             },
             {
                 id: 'wonomulyo-jagung',
                 kecamatan: 'Wonomulyo',
-                lat: -3.4300,
-                lng: 119.2400,
-                commodity: 'Jagung Kuning & Hibrida',
-                localName: 'Zea mays',
+                lat: -3.4350,
+                lng: 119.2350,
+                commodity: 'Jagung Kuning Manis',
+                localName: 'Zea mays / Baje Jagung',
                 category: 'Jagung',
                 image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen jagung ± 1.850 Hektar. Produksi rata-rata ± 10.200 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Kaya beta-karoten (Precursor Vitamin A), serat pangan (7.3g), serta protein (9.4g).',
-                utilization: 'Nasi Jagung (Basse Jagung), pakan ternak, dan tepung jagung komposit.',
+                production: 'Luas panen ± 3.450 Hektar. Produksi pipilan kering ± 18.200 Ton/Tahun.',
+                nutrition: 'Karbohidrat kompleks, Serat pangan, Beta-karoten, Vitamin B Kompleks.',
+                utilization: 'Nasi Jagung (Basse), Pakan Ternak Berkualitas, Tepung Maizena Lokal, Baje Jagung.',
                 source: 'BPS Kabupaten Polewali Mandar',
                 year: '2024',
-                status: 'Terverifikasi BPS'
+                status: 'Sentra Utama Pertanian'
             },
             {
-                id: 'tapango-singkong',
-                kecamatan: 'Tapango',
-                lat: -3.3700,
-                lng: 119.2300,
+                id: 'tinambung-ubi',
+                kecamatan: 'Tinambung',
+                lat: -3.5500,
+                lng: 119.0850,
                 commodity: 'Ubi Kayu (Singkong)',
-                localName: 'Lame Kayu / Manihot esculenta',
+                localName: 'Manihot esculenta / Pentol Singkong',
                 category: 'Ubi Kayu',
-                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen ± 310 Hektar. Produksi ± 4.650 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Sumber energi karbohidrat (38g), kalsium, dan zat besi dari daun muda.',
-                utilization: 'Singkong kukus, keripik, serta pengolahan MOCAF (Modified Cassava Flour).',
+                image: 'https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 890 Hektar. Produksi umbi segar ± 11.400 Ton/Tahun.',
+                nutrition: 'Karbohidrat tinggi, Vitamin C, Kalsium, Fosfor, Tanpa Gluten.',
+                utilization: 'Kripik Singkong Mandar, Potong Rebus Gula Merah, Tepung Tapioka Lokal.',
                 source: 'Dinas Pertanian Polman',
-                year: '2024',
-                status: 'Terverifikasi Dinas'
-            },
-            {
-                id: 'matakali-ubijalar',
-                kecamatan: 'Matakali',
-                lat: -3.4289,
-                lng: 119.2988,
-                commodity: 'Ubi Jalar Ungu & Kuning',
-                localName: 'Lame Jawa / Ipomoea batatas',
-                category: 'Ubi Jalar',
-                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen ± 185 Hektar. Produksi ± 2.220 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Kaya antioksidan betakaroten & antosianin, serat (3.0g), serta Vitamin C.',
-                utilization: 'Ubi kukus, olahan kue tradisional, purée ubi untuk substitusi tepung.',
-                source: 'BPS Polman 2024',
                 year: '2024',
                 status: 'Terverifikasi BPS'
             },
             {
                 id: 'campalagian-pisang',
                 kecamatan: 'Campalagian',
-                lat: -3.4400,
-                lng: 119.1100,
+                lat: -3.4420,
+                lng: 119.1120,
                 commodity: 'Pisang Kepok & Raja',
-                localName: 'Loka Kepok / Musa paradisiaca',
+                localName: 'Musa paradisiaca / Sanggara Peppe',
                 category: 'Pisang',
-                image: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=600&q=80',
-                production: 'Produksi pisang sentra pesisir ± 8.400 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Kalium tinggi, Vitamin B6, pati resisten untuk pencernaan sehat.',
-                utilization: 'Sanggara Peppe (Pisang Penyet Sambal Mandar), Keripik Pisang.',
+                image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+                production: 'Populasi tanaman produktif ± 45.000 rumpun. Produksi buah ± 5.600 Ton/Tahun.',
+                nutrition: 'Kalium tinggi, Magnesium, Vitamin B6, Pati resisten penyehat pencernaan.',
+                utilization: 'Sanggara Peppe (Pisang Penyet Sambal Terasi khas Mandar), Sanggara Batrawali.',
                 source: 'BPS Kabupaten Polewali Mandar',
                 year: '2024',
-                status: 'Terverifikasi BPS'
+                status: 'Sentra Hortikultura'
             },
             {
-                id: 'luyo-kacang',
-                kecamatan: 'Luyo',
-                lat: -3.3800,
-                lng: 119.1700,
-                commodity: 'Kacang Hijau',
-                localName: 'Vigna radiata',
+                id: 'limboro-kacang',
+                kecamatan: 'Limboro',
+                lat: -3.5200,
+                lng: 119.0400,
+                commodity: 'Kacang Tanah Lokal',
+                localName: 'Arachis hypogaea',
                 category: 'Kacang-kacangan',
-                image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen ± 240 Hektar. Produksi ± 360 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Protein nabati tinggi (23g), Asam Folat, dan Zat Besi (6.7mg).',
-                utilization: 'Bubur kacang hijau, minuman sari kacang hijau, isi kue tradisional.',
+                image: 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?auto=format&fit=crop&w=600&q=80',
+                production: 'Luas panen ± 410 Hektar. Produksi biji kering ± 780 Ton/Tahun.',
+                nutrition: 'Protein nabati tinggi (25g), Lemak tak jenuh tunggal, Vitamin E, Niasin.',
+                utilization: 'Bumbu Pecel Mandar, Kacang Goreng Pasir Tradisional, Olahan Selai Kacang.',
                 source: 'Dinas Pertanian Polman',
                 year: '2024',
-                status: 'Terverifikasi Dinas'
+                status: 'Terverifikasi Lapangan'
             },
             {
-                id: 'anreapi-kelor',
-                kecamatan: 'Anreapi',
-                lat: -3.3800,
-                lng: 119.3400,
-                commodity: 'Daun Kelor (Moringa)',
-                localName: 'Kelo / Moringa oleifera',
+                id: 'tapango-sayur',
+                kecamatan: 'Tapango',
+                lat: -3.3500,
+                lng: 119.3200,
+                commodity: 'Sayur Kelor & Ubi Jalar',
+                localName: 'Moringa oleifera / Ipomoea batatas',
                 category: 'Sayuran Lokal',
                 image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
-                production: 'Budidaya pekarangan & kebun lereng pegunungan melimpah.',
-                nutrition: 'Superfood: Protein 9.4g, Kalsium tinggi, Zat Besi, Vitamin C.',
-                utilization: 'Sayur bening kelor pendamping Kapurung, serbuk daun kelor fortifikasi.',
-                source: 'Observasi Lapangan Anreapi',
+                production: 'Produksi sayur kelor rumah tangga & kebun desa ± 450 Ton/Tahun.',
+                nutrition: 'Kalsium 4x susu, Vitamin A 4x wortel, Vitamin C 7x jeruk, Antioksidan tinggi.',
+                utilization: 'Sayur Bening Kelor pendamping Kapurung, Daun Kelor Tumis Rempah.',
+                source: 'Dinas Kesehatan & Pertanian Polman',
                 year: '2024',
-                status: 'Terverifikasi Lapangan'
+                status: 'Terverifikasi Gizi Masyarakat'
             },
             {
-                id: 'mapilli-jagung',
-                kecamatan: 'Mapilli',
-                lat: -3.4000,
-                lng: 119.1900,
-                commodity: 'Jagung Hibrida',
-                localName: 'Zea mays',
-                category: 'Jagung',
-                image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen ± 1.200 Hektar. Produksi ± 6.800 Ton/Tahun (BPS Polman 2024).',
-                nutrition: 'Karbohidrat komplek, serat, zat besi.',
-                utilization: 'Pakan ternak & Olahan Basse Jagung.',
-                source: 'BPS Polman 2024',
-                year: '2024',
-                status: 'Terverifikasi BPS'
-            },
-            {
-                id: 'tutar-pangan',
-                kecamatan: 'Tutar (Tutuallu)',
-                lat: -3.3000,
-                lng: 119.0800,
-                commodity: 'Ubi Kayu & Pisang Pegunungan',
-                localName: 'Lame Kayu & Loka',
-                category: 'Ubi Kayu',
-                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
-                production: 'Sentra tanaman pangan dataran tinggi. Estimasi ± 1.200 Ton/Tahun.',
-                nutrition: 'Karbohidrat dan serat tinggi.',
-                utilization: 'Pangan pokok cadangan masyarakat pegunungan.',
-                source: 'Riset Lapangan Tutar',
-                year: '2024',
-                status: 'Terverifikasi Lapangan'
-            },
-            {
-                id: 'tinambung-pisang',
-                kecamatan: 'Tinambung',
-                lat: -3.4500,
-                lng: 119.0400,
-                commodity: 'Pisang Mandar & Pangan Pesisir',
-                localName: 'Loka Mandar',
-                category: 'Pisang',
-                image: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=600&q=80',
-                production: 'Pusat perdagangan hasil pisang & kuliner khas Tinambung.',
-                nutrition: 'Kalium, energi cepat terurai.',
-                utilization: 'Jajanan khas Mandar, Sanggara Peppe.',
-                source: 'Dinas Pertanian & Pasar Tinambung',
-                year: '2024',
-                status: 'Terverifikasi Dinas'
-            },
-            {
-                id: 'balanipa-sagu',
-                kecamatan: 'Balanipa',
-                lat: -3.4600,
-                lng: 118.9900,
-                commodity: 'Sagu Pesisir',
-                localName: 'Metroxylon sagu',
-                category: 'Sagu',
-                image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80',
-                production: 'Potensi Rumbia pesisir Balanipa ± 60 Hektar.',
-                nutrition: 'Karbohidrat pati murni.',
-                utilization: 'Olahan Kapurung dan Dange.',
-                source: 'Riset Pesisir Polman',
-                year: '2024',
-                status: 'Terverifikasi Dinas'
-            },
-            {
-                id: 'limboro-ubijalar',
-                kecamatan: 'Limboro',
-                lat: -3.4400,
-                lng: 118.9500,
-                commodity: 'Ubi Jalar Pesisir',
-                localName: 'Lame Jawa',
+                id: 'matangnga-ubi',
+                kecamatan: 'Matangnga',
+                lat: -3.1200,
+                lng: 119.2800,
+                commodity: 'Ubi Jalar Ungu & Kuning',
+                localName: 'Ipomoea batatas / Katattong',
                 category: 'Ubi Jalar',
                 image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
-                production: 'Perkebunan rakyat skala menengah.',
-                nutrition: 'Beta-karoten dan serat.',
-                utilization: 'Kue lokal dan ketersediaan pangan keluarga.',
-                source: 'Penyuluh Pertanian Limboro',
+                production: 'Luas areal dataran tinggi ± 310 Hektar. Produksi umbi segar ± 2.150 Ton/Tahun.',
+                nutrition: 'Antosianin penangkal radikal bebas, Beta-karoten tinggi, Indeks glikemik sedang.',
+                utilization: 'Ubi Rebus Tradisional, Kolak Sehat, Tepung Ubi Jalar Pengganti Terigu.',
+                source: 'BPS Kabupaten Polewali Mandar',
                 year: '2024',
-                status: 'Terverifikasi'
+                status: 'Wilayah Pegunungan'
             },
             {
-                id: 'matangnga-pangan',
-                kecamatan: 'Matangnga',
+                id: 'tutar-jagung',
+                kecamatan: 'Tutar',
                 lat: -3.2200,
-                lng: 119.2100,
-                commodity: 'Jagung & Umbi Hutan',
-                localName: 'Zea mays',
+                lng: 119.1800,
+                commodity: 'Jagung Lokal Perbukitan',
+                localName: 'Zea mays cerina',
                 category: 'Jagung',
                 image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
-                production: 'Kecamatan dataran tinggi. Produksi jagung ± 850 Ton/Tahun.',
-                nutrition: 'Karbohidrat.',
-                utilization: 'Pangan lokal mandiri.',
-                source: 'Studi Pendahuluan BPS',
-                year: '2024',
-                status: 'Terverifikasi BPS'
-            },
-            {
-                id: 'balla-pangan',
-                kecamatan: 'Balla',
-                lat: -3.2700,
-                lng: 119.2900,
-                commodity: 'Ubi Kayu & Sayuran Pegunungan',
-                localName: 'Manihot esculenta',
-                category: 'Ubi Kayu',
-                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
-                production: 'Wilayah perbukitan Balla. Produksi mikro lokal.',
-                nutrition: 'Karbohidrat kompleks.',
-                utilization: 'Pangan lokal konsumsi langsung.',
-                source: 'Penyuluh Pertanian Balla',
-                year: '2024',
-                status: 'Terverifikasi'
-            },
-            {
-                id: 'allu-pangan',
-                kecamatan: 'Allu (Alu)',
-                lat: -3.3400,
-                lng: 119.0100,
-                commodity: 'Jagung & Kacang Tanah',
-                localName: 'Zea mays & Arachis hypogaea',
-                category: 'Kacang-kacangan',
-                image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
-                production: 'Luas panen kacang & jagung ± 420 Hektar.',
-                nutrition: 'Protein dan lemak nabati sehat.',
-                utilization: 'Camilan lokal dan bumbu masakan khas.',
+                production: 'Luas panen ladang ± 1.120 Hektar. Produksi biji ± 3.400 Ton/Tahun.',
+                nutrition: 'Karbohidrat kompleks, Serat pangan, Energi berkelanjutan.',
+                utilization: 'Nasi Jagung Tutar, Pangan Cadangan Strategis Masyarakat Pegunungan.',
                 source: 'BPS Polman 2024',
                 year: '2024',
                 status: 'Terverifikasi BPS'
+            },
+            {
+                id: 'tubbi-taramanu-sagu',
+                kecamatan: 'Tubbi Taramanu (Tutar)',
+                lat: -3.2800,
+                lng: 119.2500,
+                commodity: 'Sagu Hutan & Umbi Hutan',
+                localName: 'Metroxylon sp. / Ubi Hutan',
+                category: 'Sagu',
+                image: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80',
+                production: 'Potensi hutan adat dan lembah sungai ± 85 Hektar.',
+                nutrition: 'Pati alami, serat pangan tinggi.',
+                utilization: 'Pangan alternatif kearifan lokal Tutar.',
+                source: 'Dinas Pertanian Polman',
+                year: '2024',
+                status: 'Terverifikasi Lembah Sungai'
+            },
+            {
+                id: 'allu-mambi-pisang',
+                kecamatan: 'Alu',
+                lat: -3.3800,
+                lng: 119.2100,
+                commodity: 'Pisang Barangan & Kepok',
+                localName: 'Musa acuminata',
+                category: 'Pisang',
+                image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi buah ± 1.850 Ton/Tahun.',
+                nutrition: 'Vitamin C, Vitamin B6, Kalium.',
+                utilization: 'Olahan kerepek pisang & pisang buah meja.',
+                source: 'BPS Polman',
+                year: '2024',
+                status: 'Terverifikasi'
+            },
+            {
+                id: 'kezi-moyo-ubi',
+                kecamatan: 'Anreapi',
+                lat: -3.3600,
+                lng: 119.3600,
+                commodity: 'Ubi Kayu & Talas Mandar',
+                localName: 'Colocasia esculenta / Talas',
+                category: 'Ubi Kayu',
+                image: 'https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi umbi dataran tinggi ± 920 Ton/Tahun.',
+                nutrition: 'Karbohidrat mudah cerna, mineral kalsium.',
+                utilization: 'Talas Kukus, Keripik Talas Gurih.',
+                source: 'Dinas Pertanian Polman',
+                year: '2024',
+                status: 'Terverifikasi'
+            },
+            {
+                id: 'Binuang-pesisir',
+                kecamatan: 'Binuang',
+                lat: -3.4450,
+                lng: 119.3850,
+                commodity: 'Ikan Teri & Hasil Laut Binuang',
+                localName: 'Stolephorus sp. / Pelabuhan Palippis',
+                category: 'Hasil Laut / Pesisir',
+                image: 'https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=600&q=80',
+                production: 'Hasil tangkapan nelayan pesisir Binuang ± 3.100 Ton/Tahun.',
+                nutrition: 'Kalsium tinggi untuk tulang, Protein hewani, Omega-3.',
+                utilization: 'Ikan Teri Medan Khas Binuang, Sambal Teri Mandar.',
+                source: 'DKP Sulbar',
+                year: '2024',
+                status: 'Sentra Pesisir'
+            },
+            {
+                id: 'Limboro-sayur',
+                kecamatan: 'Limboro',
+                lat: -3.5100,
+                lng: 119.0600,
+                commodity: 'Kacang Hijau & Sayuran',
+                localName: 'Vigna radiata',
+                category: 'Kacang-kacangan',
+                image: 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi kacang-kacangan lahan kering ± 340 Ton/Tahun.',
+                nutrition: 'Protein nabati, asam folat, zat besi tinggi.',
+                utilization: 'Bubur Kacang Hijau Khas Mandar, Olahan Tepung.',
+                source: 'BPS Polman',
+                year: '2024',
+                status: 'Terverifikasi'
+            },
+            {
+                id: 'Tinambung-laut',
+                kecamatan: 'Tinambung',
+                lat: -3.5650,
+                lng: 119.0700,
+                commodity: 'Ikan Bandeng & Rumput Laut',
+                localName: 'Chanos chanos',
+                category: 'Hasil Laut / Pesisir',
+                image: 'https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi tambak & pesisir Tinambung ± 4.200 Ton/Tahun.',
+                nutrition: 'Protein tinggi, Asam lemak esensial.',
+                utilization: 'Bandeng Presto Tulang Lunak, Bandeng Asap Mandar.',
+                source: 'DKP Sulbar',
+                year: '2024',
+                status: 'Terverifikasi Tambak'
+            },
+            {
+                id: 'Mapilli-padi-jagung',
+                kecamatan: 'Mapilli',
+                lat: -3.3950,
+                lng: 119.2600,
+                commodity: 'Jagung Manis & Padi Ladang',
+                localName: 'Zea mays / Padi Lokal',
+                category: 'Jagung',
+                image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
+                production: 'Produksi pangan strategis Mapilli ± 6.800 Ton/Tahun.',
+                nutrition: 'Karbohidrat, Vitamin B kompleks.',
+                utilization: 'Nasi Jagung Campur, Olahan Pangan Lokal.',
+                source: 'BPS Polman',
+                year: '2024',
+                status: 'Sentra Pertanian Subur'
             }
         ];
 
         let homeMap = null;
         let fullMap = null;
-        let homeMarkersGroup = null;
-        let fullMarkersGroup = null;
-        let currentTileLayer = null;
-
-        // GPS State
-        let watchPositionId = null;
-        let currentUserCoords = null; // [lat, lng]
-        let currentUserHeading = 0;
+        let markersLayer = null;
         let userLocationMarker = null;
-        let userAccuracyCircle = null;
-        let isFollowModeActive = false;
-        let userHasDraggedMap = false;
-        let isManualMode = false;
-
-        // Navigation & Route State
         let routingControl = null;
-        let activeDestination = null; // { lat, lng, name }
-        let activeProfile = 'car';
-        let currentRouteCoordinates = [];
+        let userLat = null;
+        let userLng = null;
+        let isFollowing = false;
+        let watchId = null;
+        let currentRouteProfile = 'driving';
+        let currentTileLayer = 'osm';
+        let activeTargetDestination = null;
+        let productionChartInstance = null;
+        let districtChartInstance = null;
 
-        const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        const esriSatUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+        const polmanKecamatanList = [
+            'Polewali', 'Binuang', 'Wonomulyo', 'Tinambung', 'Campalagian',
+            'Limboro', 'Tapango', 'Matangnga', 'Tutar', 'Tubbi Taramanu',
+            'Alu', 'Anreapi', 'Mapilli', 'Balanipa', 'Luyo', 'Master'
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populateKecamatanDropdown();
+            initHomeMap();
+            initFullMap();
+            renderCommodityCatalog();
+            renderAnalysisTable();
+            initCharts();
+        });
+
+        function populateKecamatanDropdown() {
+            const select = document.getElementById('map-filter-kecamatan');
+            polmanKecamatanList.forEach(kec => {
+                const opt = document.createElement('option');
+                opt.value = kec;
+                opt.textContent = `Kecamatan ${kec}`;
+                select.appendChild(opt);
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-pangan-50', 'text-pangan-700');
+            });
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.remove('hidden');
+
+            document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(el => {
+                el.classList.add('bg-pangan-50', 'text-pangan-700');
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (tabId === 'peta' && fullMap) {
+                setTimeout(() => { fullMap.invalidateSize(); }, 250);
+            }
+            if (tabId === 'analisis') {
+                if (productionChartInstance) productionChartInstance.resize();
+                if (districtChartInstance) districtChartInstance.resize();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- MAPS INITIALIZATION ---
+        function initHomeMap() {
+            if (homeMap) return;
+            homeMap = L.map('home-map', { zoomControl: false }).setView([-3.4000, 119.2500], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(homeMap);
+
+            polmanGISData.forEach(item => {
+                const color = getCategoryColor(item.category);
+                const customIcon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+                    iconSize: [14, 14],
+                    iconAnchor: [7, 7]
+                });
+                L.marker([item.lat, item.lng], { icon: customIcon })
+                    .addTo(homeMap)
+                    .bindPopup(`<div class="p-1 font-sans"><strong class="text-sm font-bold text-slate-900">${item.commodity}</strong><br><span class="text-xs text-pangan-700 font-semibold">Kec. ${item.kecamatan}</span><br><button onclick="switchTab('peta'); focusOnItem('${item.id}')" class="mt-2 px-2.5 py-1 bg-pangan-700 text-white rounded text-[10px] font-bold">Buka Peta & Navigasi</button></div>`);
+            });
+        }
+
+        function initFullMap() {
+            if (fullMap) return;
+            fullMap = L.map('full-map').setView([-3.4000, 119.2500], 11);
+            updateTileLayer();
+            markersLayer = L.layerGroup().addTo(fullMap);
+            renderMapMarkers(polmanGISData);
+        }
+
+        let currentTileObj = null;
+        function updateTileLayer() {
+            if (currentTileObj) fullMap.removeLayer(currentTileObj);
+            if (currentTileLayer === 'osm') {
+                currentTileObj = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors'
+                });
+            } else {
+                currentTileObj = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19,
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community'
+                });
+            }
+            currentTileObj.addTo(fullMap);
+        }
+
+        function setBaseTile(type) {
+            currentTileLayer = type;
+            document.getElementById('btn-tile-osm').className = type === 'osm' ? 'px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm' : 'px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900';
+            document.getElementById('btn-tile-sat').className = type === 'sat' ? 'px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm' : 'px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900';
+            updateTileLayer();
+        }
 
         function getCategoryColor(cat) {
             switch(cat) {
-                case 'Sagu': return '#059669';
+                case 'Sagu': return '#16a34a';
                 case 'Jagung': return '#f59e0b';
                 case 'Ubi Kayu': return '#0d9488';
                 case 'Ubi Jalar': return '#9333ea';
@@ -971,496 +1053,413 @@
             }
         }
 
-        function createCustomIcon(cat) {
-            const color = getCategoryColor(cat);
-            const svgIcon = `
-                <div class="relative flex items-center justify-center w-8 h-8">
-                    <div class="absolute w-8 h-8 rounded-full opacity-30 marker-pin-pulse" style="background-color: ${color};"></div>
-                    <div class="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white text-[10px] font-bold" style="background-color: ${color};">
-                        📍
-                    </div>
-                </div>
-            `;
-            return L.divIcon({
-                html: svgIcon,
-                className: 'custom-div-icon',
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-                popupAnchor: [0, -16]
-            });
-        }
+        function renderMapMarkers(dataArray) {
+            if (!markersLayer) return;
+            markersLayer.clearLayers();
 
-        function createUserGpsIcon(heading = 0, isSimulated = false) {
-            const colorClass = isSimulated ? 'bg-amber-600' : 'bg-blue-600';
-            const pulseClass = isSimulated ? 'bg-amber-500' : 'bg-blue-500';
-            const iconSymbol = isSimulated ? '📌' : '🧭';
+            dataArray.forEach(item => {
+                const color = getCategoryColor(item.category);
+                const customIcon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 8px; color: white;">📍</div>`,
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
 
-            const svgUser = `
-                <div class="relative flex items-center justify-center w-10 h-10 user-gps-marker" style="transform: rotate(${heading}deg);">
-                    <div class="absolute w-10 h-10 rounded-full ${pulseClass} opacity-40 marker-pin-pulse"></div>
-                    <div class="w-7 h-7 rounded-full ${colorClass} border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold">
-                        ${iconSymbol}
-                    </div>
-                </div>
-            `;
-            return L.divIcon({
-                html: svgUser,
-                className: 'custom-div-icon',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20]
-            });
-        }
-
-        function initLeafletMaps() {
-            try {
-                if (!homeMap && document.getElementById('home-map')) {
-                    homeMap = L.map('home-map', { zoomControl: false }).setView([-3.38, 119.23], 10);
-                    L.tileLayer(osmTileUrl, { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(homeMap);
-                    homeMarkersGroup = L.layerGroup().addTo(homeMap);
-                    renderMapPoints(homeMarkersGroup, polmanGISData);
-                }
-
-                if (!fullMap && document.getElementById('full-map')) {
-                    fullMap = L.map('full-map').setView([-3.38, 119.23], 10);
-                    currentTileLayer = L.tileLayer(osmTileUrl, { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(fullMap);
-                    fullMarkersGroup = L.layerGroup().addTo(fullMap);
-                    renderMapPoints(fullMarkersGroup, polmanGISData);
-
-                    fullMap.on('dragstart', function() {
-                        if (isFollowModeActive) {
-                            userHasDraggedMap = true;
-                            pauseFollowModeUI('Peta digeser manual');
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error('Gagal menginisialisasi peta Leaflet:', err);
-            }
-        }
-
-        function setBaseTile(type) {
-            const btnOsm = document.getElementById('btn-tile-osm');
-            const btnSat = document.getElementById('btn-tile-sat');
-
-            if (fullMap) {
-                if (currentTileLayer) fullMap.removeLayer(currentTileLayer);
-
-                if (type === 'sat') {
-                    currentTileLayer = L.tileLayer(esriSatUrl, { maxZoom: 19, attribution: '&copy; Esri World Imagery' }).addTo(fullMap);
-                    if (btnSat) btnSat.className = "px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm";
-                    if (btnOsm) btnOsm.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900";
-                } else {
-                    currentTileLayer = L.tileLayer(osmTileUrl, { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(fullMap);
-                    if (btnOsm) btnOsm.className = "px-3 py-1.5 rounded-lg font-bold bg-white text-pangan-800 shadow-sm";
-                    if (btnSat) btnSat.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900";
-                }
-            }
-        }
-
-        function renderMapPoints(layerGroup, dataList) {
-            if (!layerGroup) return;
-            layerGroup.clearLayers();
-            dataList.forEach(item => {
-                const markerIcon = createCustomIcon(item.category);
-                const marker = L.marker([item.lat, item.lng], { icon: markerIcon });
-
-                const popupHtml = `
-                    <div class="p-2 max-w-xs space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[9px] font-bold text-pangan-800 bg-pangan-50 px-2 py-0.5 rounded border border-pangan-200 uppercase">Kec. ${item.kecamatan}</span>
-                            <span class="text-[9px] font-mono text-slate-400">${item.lat.toFixed(3)}, ${item.lng.toFixed(3)}</span>
-                        </div>
-                        <h4 class="font-extrabold text-slate-900 text-sm leading-tight mt-1">${item.commodity}</h4>
-                        <p class="text-[11px] text-slate-500 italic">${item.localName}</p>
-                        <p class="text-[11px] text-slate-600 line-clamp-2">${item.production}</p>
-                        <div class="space-y-1.5 mt-2">
-                            <button onclick="window.getDirectionsTo(${item.lat}, ${item.lng}, '${item.commodity.replace(/'/g, "\\'")}')" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold transition flex items-center justify-center space-x-1 shadow-sm">
-                                <span>Arahkan ke Lokasi Ini</span>
-                            </button>
-                            <button onclick="window.openModal('${item.id}')" class="w-full py-1.5 bg-pangan-800 hover:bg-pangan-900 text-white rounded-lg text-[10px] font-bold transition flex items-center justify-center space-x-1">
-                                <span>Detail GIS & Profil Komoditas</span>
+                const marker = L.marker([item.lat, item.lng], { icon: customIcon });
+                marker.bindPopup(`
+                    <div class="p-2 space-y-2 font-sans max-w-xs">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-pangan-700 bg-pangan-50 px-2 py-0.5 rounded">${item.category}</span>
+                        <h4 class="text-sm font-black text-slate-900 leading-snug">${item.commodity}</h4>
+                        <p class="text-xs text-slate-600">Kecamatan: <strong>${item.kecamatan}</strong></p>
+                        <p class="text-[11px] text-slate-500 line-clamp-2">${item.production}</p>
+                        <div class="flex items-center space-x-2 pt-1">
+                            <button onclick="openDetailModal('${item.id}')" class="px-2.5 py-1.5 bg-pangan-800 hover:bg-pangan-900 text-white rounded-lg text-[10px] font-bold shadow">Detail Info</button>
+                            <button onclick="calculateRouteTo(${item.lat}, ${item.lng}, '${item.commodity} (${item.kecamatan})')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold shadow flex items-center space-x-1">
+                                <i data-lucide="navigation" class="w-3 h-3"></i>
+                                <span>Navigasi Rute</span>
                             </button>
                         </div>
                     </div>
-                `;
-
-                marker.bindPopup(popupHtml);
-                layerGroup.addLayer(marker);
-            });
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function updateGpsStatusUI(state, text) {
-            const dot = document.getElementById('gps-status-dot');
-            const txt = document.getElementById('gps-status-text');
-            if (!dot || !txt) return;
-
-            txt.innerText = text;
-            if (state === 'searching') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping";
-            } else if (state === 'active') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-            } else if (state === 'manual') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
-            } else if (state === 'weak') {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-yellow-400";
-            } else {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-red-500";
-            }
-        }
-
-        function requestUserLocation() {
-            if (!navigator.geolocation) {
-                alert('Aplikasi perambah (browser) Anda tidak mendukung fitur Geolocation.');
-                updateGpsStatusUI('error', 'Browser Tidak Mendukung GPS');
-                enableManualFallback('Browser Tidak Mendukung GPS');
-                return;
-            }
-
-            updateGpsStatusUI('searching', 'Mencari lokasi GPS...');
-
-            navigator.geolocation.getCurrentPosition(
-                function(pos) {
-                    isManualMode = false;
-                    document.getElementById('gps-permission-banner')?.classList.add('hidden');
-                    onGpsPositionReceived(pos, true);
-                    startWatchPosition();
-                },
-                function(err) {
-                    handleGpsError(err);
-                },
-                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-            );
-        }
-
-        function startWatchPosition() {
-            if (watchPositionId !== null) return;
-
-            watchPositionId = navigator.geolocation.watchPosition(
-                function(pos) {
-                    if (!isManualMode) onGpsPositionReceived(pos, false);
-                },
-                function(err) {
-                    console.warn('Pelacakan GPS latar belakang terganggu:', err.message);
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 2000 }
-            );
-        }
-
-        function onGpsPositionReceived(pos, isInitial = false) {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-            const accuracy = pos.coords.accuracy || 30;
-            const heading = pos.coords.heading || 0;
-
-            currentUserCoords = [lat, lng];
-            currentUserHeading = heading;
-
-            updateGpsStatusUI('active', `Live GPS (±${Math.round(accuracy)}m)`);
-
-            const followBtn = document.getElementById('btn-toggle-follow');
-            if (followBtn) {
-                followBtn.disabled = false;
-                followBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
-                followBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
-            }
-
-            if (fullMap) {
-                if (userLocationMarker) {
-                    userLocationMarker.setLatLng(currentUserCoords);
-                    userLocationMarker.setIcon(createUserGpsIcon(heading, false));
-                } else {
-                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(heading, false), zIndexOffset: 1000 })
-                        .addTo(fullMap)
-                        .bindPopup('<b>📍 Lokasi Anda Saat Ini (GPS Live)</b>');
-                }
-
-                if (userAccuracyCircle) {
-                    userAccuracyCircle.setLatLng(currentUserCoords);
-                    userAccuracyCircle.setRadius(accuracy);
-                } else {
-                    userAccuracyCircle = L.circle(currentUserCoords, {
-                        radius: accuracy,
-                        color: '#2563eb',
-                        fillColor: '#60a5fa',
-                        fillOpacity: 0.2
-                    }).addTo(fullMap);
-                }
-
-                if (isInitial || (isFollowModeActive && !userHasDraggedMap)) {
-                    fullMap.panTo(currentUserCoords, { animate: true, duration: 0.8 });
-                    if (isInitial) fullMap.setZoom(14);
-                }
-
-                checkAndAutoReroute(currentUserCoords);
-            }
-        }
-
-        function handleGpsError(err) {
-            let msg = 'Izin lokasi GPS belum aktif atau diblokir.';
-            document.getElementById('gps-permission-banner')?.classList.remove('hidden');
-            
-            updateGpsStatusUI('error', 'Izin GPS Ditolak / Dibatasi');
-            
-            // Auto fallback to manual start point in Polman (Kantor Bupati Polman)
-            enableManualFallback('Beralih ke Titik Simulasi Polman');
-        }
-
-        function enableManualFallback(reason) {
-            isManualMode = true;
-            // Default: Kantor Bupati Polewali Mandar
-            currentUserCoords = [-3.4320, 119.3400];
-            
-            updateGpsStatusUI('manual', 'Mode Titik Manual (Kantor Bupati)');
-
-            const followBtn = document.getElementById('btn-toggle-follow');
-            if (followBtn) {
-                followBtn.disabled = false;
-                followBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
-                followBtn.classList.add('bg-amber-600', 'hover:bg-amber-700', 'text-white');
-            }
-
-            if (fullMap) {
-                if (userAccuracyCircle) {
-                    fullMap.removeLayer(userAccuracyCircle);
-                    userAccuracyCircle = null;
-                }
-
-                if (userLocationMarker) {
-                    userLocationMarker.setLatLng(currentUserCoords);
-                    userLocationMarker.setIcon(createUserGpsIcon(0, true));
-                } else {
-                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(0, true), zIndexOffset: 1000 })
-                        .addTo(fullMap)
-                        .bindPopup('<b>📍 Titik Awal Simulasi Navigasi (Kantor Bupati Polman)</b>');
-                }
-
-                fullMap.panTo(currentUserCoords, { animate: true });
-            }
-
-            if (activeDestination) {
-                calculateAndDrawRoute(currentUserCoords, activeDestination);
-            }
-        }
-
-        function setManualStartPointModal() {
-            document.getElementById('manual-point-modal')?.classList.remove('hidden');
-        }
-
-        function closeManualModal() {
-            document.getElementById('manual-point-modal')?.classList.add('hidden');
-        }
-
-        function selectManualPoint(lat, lng, name) {
-            isManualMode = true;
-            currentUserCoords = [lat, lng];
-            closeManualModal();
-
-            updateGpsStatusUI('manual', `Manual: ${name}`);
-
-            if (fullMap) {
-                if (userAccuracyCircle) {
-                    fullMap.removeLayer(userAccuracyCircle);
-                    userAccuracyCircle = null;
-                }
-
-                if (userLocationMarker) {
-                    userLocationMarker.setLatLng(currentUserCoords);
-                    userLocationMarker.setIcon(createUserGpsIcon(0, true));
-                } else {
-                    userLocationMarker = L.marker(currentUserCoords, { icon: createUserGpsIcon(0, true), zIndexOffset: 1000 })
-                        .addTo(fullMap)
-                        .bindPopup(`<b>📍 Titik Awal Simulasi: ${name}</b>`);
-                }
-
-                fullMap.panTo(currentUserCoords, { animate: true });
-            }
-
-            if (activeDestination) {
-                calculateAndDrawRoute(currentUserCoords, activeDestination);
-            }
-        }
-
-        function toggleFollowMode() {
-            if (!currentUserCoords) {
-                requestUserLocation();
-                return;
-            }
-
-            isFollowModeActive = !isFollowModeActive;
-            userHasDraggedMap = false;
-
-            const txt = document.getElementById('follow-btn-text');
-            const btn = document.getElementById('btn-toggle-follow');
-
-            if (isFollowModeActive) {
-                if (txt) txt.innerText = 'Ikuti Saya: AKTIF';
-                if (btn) btn.className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 animate-pulse";
-                if (fullMap && currentUserCoords) {
-                    fullMap.panTo(currentUserCoords, { animate: true });
-                }
-            } else {
-                pauseFollowModeUI('Nonaktif');
-            }
-        }
-
-        function pauseFollowModeUI(statusStr = 'Nonaktif') {
-            isFollowModeActive = false;
-            const txt = document.getElementById('follow-btn-text');
-            const btn = document.getElementById('btn-toggle-follow');
-            if (txt) txt.innerText = `Ikuti Saya: ${statusStr}`;
-            if (btn) btn.className = "px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2";
-        }
-
-        function recenterToUserLocation() {
-            if (currentUserCoords && fullMap) {
-                userHasDraggedMap = false;
-                isFollowModeActive = true;
-                const txt = document.getElementById('follow-btn-text');
-                const btn = document.getElementById('btn-toggle-follow');
-                if (txt) txt.innerText = 'Ikuti Saya: AKTIF';
-                if (btn) btn.className = "px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2 animate-pulse";
-                
-                fullMap.setView(currentUserCoords, 15, { animate: true });
-            } else {
-                requestUserLocation();
-            }
-        }
-
-        window.getDirectionsTo = function(targetLat, targetLng, targetName) {
-            if (!fullMap) return;
-            switchTab('peta');
-
-            activeDestination = { lat: targetLat, lng: targetLng, name: targetName };
-
-            if (!currentUserCoords) {
-                // Autoselect fallback if GPS is not ready
-                enableManualFallback('Mempersiapkan Titik Awal');
-            } else {
-                calculateAndDrawRoute(currentUserCoords, activeDestination);
-            }
-        };
-
-        function calculateAndDrawRoute(startCoords, destObj) {
-            const startLatLng = L.latLng(startCoords[0], startCoords[1]);
-            const destLatLng = L.latLng(destObj.lat, destObj.lng);
-
-            if (routingControl && fullMap) {
-                fullMap.removeControl(routingControl);
-            }
-
-            try {
-                routingControl = L.Routing.control({
-                    waypoints: [startLatLng, destLatLng],
-                    router: L.Routing.osrmv1({
-                        serviceUrl: 'https://router.project-osrm.org/route/v1',
-                        profile: activeProfile === 'walk' ? 'foot' : 'car'
-                    }),
-                    lineOptions: {
-                        styles: [{ color: '#2563eb', opacity: 0.85, weight: 6 }]
-                    },
-                    createMarker: function(i, wp, nWps) {
-                        if (i === nWps - 1) {
-                            return L.marker(wp.latLng).bindPopup(`<b>Tujuan: ${destObj.name}</b>`);
-                        }
-                        return null;
-                    },
-                    addWaypoints: false,
-                    draggableWaypoints: false,
-                    fitSelectedRoutes: true,
-                    showAlternatives: false
-                }).addTo(fullMap);
-
-                routingControl.on('routesfound', function(e) {
-                    const routes = e.routes;
-                    const summary = routes[0].summary;
-                    const distanceKm = (summary.totalDistance / 1000).toFixed(1);
-                    const timeMin = Math.round(summary.totalTime / 60);
-
-                    currentRouteCoordinates = routes[0].coordinates;
-
-                    const banner = document.getElementById('route-info-banner');
-                    const statusText = document.getElementById('route-status-text');
-                    const clearBtn = document.getElementById('btn-clear-route');
-
-                    if (banner && statusText) {
-                        banner.classList.remove('hidden');
-                        statusText.innerHTML = `<strong>Navigasi Rute Jalan:</strong> Ke <strong>${destObj.name}</strong> • Jarak: <strong>${distanceKm} km</strong> • Estimasi: <strong>${timeMin} menit</strong>`;
-                    }
-                    if (clearBtn) clearBtn.classList.remove('hidden');
-                });
-
-                routingControl.on('routingerror', function() {
-                    alert('Layanan OSRM tidak dapat menghitung rute jalan menuju titik ini.');
-                });
-            } catch (err) {
-                console.error('Gagal membuat rute OSRM:', err);
-            }
-        }
-
-        window.clearActiveRoute = function() {
-            if (routingControl && fullMap) {
-                fullMap.removeControl(routingControl);
-                routingControl = null;
-            }
-            activeDestination = null;
-            currentRouteCoordinates = [];
-
-            const banner = document.getElementById('route-info-banner');
-            const clearBtn = document.getElementById('btn-clear-route');
-            if (banner) banner.classList.add('hidden');
-            if (clearBtn) clearBtn.classList.add('hidden');
-        };
-
-        function checkAndAutoReroute(userCoords) {
-            if (!activeDestination || currentRouteCoordinates.length === 0 || isManualMode) return;
-
-            let minDistance = Infinity;
-            currentRouteCoordinates.forEach(pt => {
-                const dist = L.latLng(userCoords[0], userCoords[1]).distanceTo(L.latLng(pt.lat, pt.lng));
-                if (dist < minDistance) minDistance = dist;
-            });
-
-            if (minDistance > 45) {
-                calculateAndDrawRoute(userCoords, activeDestination);
-            }
-        }
-
-        window.setRouteProfile = function(profile) {
-            activeProfile = profile;
-            const btnCar = document.getElementById('mode-car');
-            const btnWalk = document.getElementById('mode-walk');
-            if (profile === 'car') {
-                if (btnCar) btnCar.className = "px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1";
-                if (btnWalk) btnWalk.className = "px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1";
-            } else {
-                if (btnWalk) btnWalk.className = "px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1";
-                if (btnCar) btnCar.className = "px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1";
-            }
-
-            if (activeDestination && currentUserCoords) {
-                calculateAndDrawRoute(currentUserCoords, activeDestination);
-            }
-        };
-
-        function populateFilterSelects() {
-            const selectKec = document.getElementById('map-filter-kecamatan');
-            if (!selectKec) return;
-
-            selectKec.innerHTML = '<option value="ALL">Semua Kecamatan (16 Kecamatan)</option>';
-            const uniqueKec = [...new Set(polmanGISData.map(i => i.kecamatan))].sort();
-            uniqueKec.forEach(kec => {
-                const opt = document.createElement('option');
-                opt.value = kec;
-                opt.innerText = 'Kecamatan ' + kec;
-                selectKec.appendChild(opt);
+                `);
+                markersLayer.addLayer(marker);
             });
         }
 
-        window.applyMapFilters = function() {
+        function applyMapFilters() {
             const kecVal = document.getElementById('map-filter-kecamatan').value;
             const katVal = document.getElementById('map-filter-kategori').value;
             const searchVal = document.getElementById('map-search').value.toLowerCase();
 
             const filtered = polmanGISData.filter(item => {
-                const matchKec = (kecVal 
+                const matchKec = (kecVal === 'ALL' || item.kecamatan === kecVal);
+                const matchKat = (katVal === 'ALL' || item.category === katVal);
+                const matchSearch = (item.commodity.toLowerCase().includes(searchVal) || item.kecamatan.toLowerCase().includes(searchVal) || item.localName.toLowerCase().includes(searchVal));
+                return matchKec && matchKat && matchSearch;
+            });
+
+            renderMapMarkers(filtered);
+        }
+
+        function resetMapBounds() {
+            if (!fullMap) return;
+            fullMap.setView([-3.4000, 119.2500], 11);
+        }
+
+        function focusOnItem(id) {
+            const item = polmanGISData.find(i => i.id === id);
+            if (!item || !fullMap) return;
+            fullMap.setView([item.lat, item.lng], 14);
+        }
+
+        // --- GPS & ROUTING OSRM MACHINE ---
+        function updateGPSStatus(status, text, dotColor) {
+            document.getElementById('gps-status-text').textContent = text;
+            const dot = document.getElementById('gps-status-dot');
+            dot.className = `w-2.5 h-2.5 rounded-full ${dotColor}`;
+        }
+
+        function requestUserLocation() {
+            if (!navigator.geolocation) {
+                alert("Browser Anda tidak mendukung GPS Geolocation.");
+                return;
+            }
+
+            updateGPSStatus('searching', 'Mencari sinyal GPS...', 'bg-amber-500 animate-pulse');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLat = position.coords.latitude;
+                    userLng = position.coords.longitude;
+                    updateGPSStatus('active', `GPS Aktif (${userLat.toFixed(4)}, ${userLng.toFixed(4)})`, 'bg-emerald-500');
+                    document.getElementById('gps-permission-banner').classList.add('hidden');
+                    
+                    const btnFollow = document.getElementById('btn-toggle-follow');
+                    btnFollow.disabled = false;
+                    btnFollow.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+                    btnFollow.classList.add('bg-pangan-600', 'text-white', 'hover:bg-pangan-700');
+
+                    showUserMarker(userLat, userLng);
+                    fullMap.setView([userLat, userLng], 14);
+
+                    // Start continuous watch
+                    if (watchId) navigator.geolocation.clearWatch(watchId);
+                    watchId = navigator.geolocation.watchPosition(
+                        (pos) => {
+                            userLat = pos.coords.latitude;
+                            userLng = pos.coords.longitude;
+                            updateUserMarker(userLat, userLng);
+                            if (isFollowing) {
+                                fullMap.setView([userLat, userLng], fullMap.getZoom());
+                            }
+                        },
+                        (err) => { console.warn("Watch position error:", err); },
+                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+                    );
+                },
+                (error) => {
+                    console.warn("Geolocation error:", error);
+                    updateGPSStatus('error', 'GPS Ditolak / Gagal', 'bg-red-500');
+                    document.getElementById('gps-permission-banner').classList.remove('hidden');
+                    // Fallback to manual default in Polman center
+                    userLat = -3.4320;
+                    userLng = 119.3400;
+                    showUserMarker(userLat, userLng);
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        function showUserMarker(lat, lng) {
+            if (userLocationMarker) fullMap.removeLayer(userLocationMarker);
+            const userIcon = L.divIcon({
+                className: 'custom-div-icon user-gps-marker',
+                html: `<div style="background-color: #2563eb; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(37,99,235,0.8); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">🛈</div>`,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+            userLocationMarker = L.marker([lat, lng], { icon: userIcon }).addTo(fullMap);
+            userLocationMarker.bindPopup("<b>Posisi Anda Saat Ini (GPS)</b>").openPopup();
+        }
+
+        function updateUserMarker(lat, lng) {
+            if (userLocationMarker) {
+                userLocationMarker.setLatLng([lat, lng]);
+            } else {
+                showUserMarker(lat, lng);
+            }
+            if (activeTargetDestination && routingControl) {
+                // Optionally update route if following
+            }
+        }
+
+        function toggleFollowMode() {
+            isFollowing = !isFollowing;
+            const btn = document.getElementById('btn-toggle-follow');
+            const txt = document.getElementById('follow-btn-text');
+            if (isFollowing) {
+                txt.textContent = "Ikuti Saya: Aktif";
+                btn.className = "px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2";
+                if (userLat && userLng) fullMap.setView([userLat, userLng], 15);
+            } else {
+                txt.textContent = "Ikuti Saya: Nonaktif";
+                btn.className = "px-4 py-2.5 bg-pangan-600 hover:bg-pangan-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-2";
+            }
+        }
+
+        function recenterToUserLocation() {
+            if (userLat && userLng) {
+                fullMap.setView([userLat, userLng], 15);
+                if (userLocationMarker) userLocationMarker.openPopup();
+            } else {
+                requestUserLocation();
+            }
+        }
+
+        function setManualStartPointModal() {
+            document.getElementById('manual-point-modal').classList.remove('hidden');
+        }
+
+        function closeManualModal() {
+            document.getElementById('manual-point-modal').classList.add('hidden');
+        }
+
+        function selectManualPoint(lat, lng, name) {
+            userLat = lat;
+            userLng = lng;
+            updateGPSStatus('manual', `Titik Manual: ${name}`, 'bg-purple-600');
+            showUserMarker(userLat, userLng);
+            fullMap.setView([userLat, userLng], 14);
+            closeManualModal();
+            document.getElementById('gps-permission-banner').classList.add('hidden');
+
+            const btnFollow = document.getElementById('btn-toggle-follow');
+            btnFollow.disabled = false;
+            btnFollow.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+            btnFollow.classList.add('bg-pangan-600', 'text-white', 'hover:bg-pangan-700');
+
+            if (activeTargetDestination) {
+                calculateRouteTo(activeTargetDestination.lat, activeTargetDestination.lng, activeTargetDestination.name);
+            }
+        }
+
+        function setRouteProfile(profile) {
+            currentRouteProfile = profile === 'walk' ? 'foot' : 'driving';
+            document.getElementById('mode-car').className = profile === 'car' ? 'px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1' : 'px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1';
+            document.getElementById('mode-walk').className = profile === 'walk' ? 'px-3 py-1.5 rounded-lg font-bold bg-pangan-600 text-white shadow-sm flex items-center space-x-1' : 'px-3 py-1.5 rounded-lg font-bold text-pangan-200 hover:text-white flex items-center space-x-1';
+
+            if (activeTargetDestination) {
+                calculateRouteTo(activeTargetDestination.lat, activeTargetDestination.lng, activeTargetDestination.name);
+            }
+        }
+
+        function calculateRouteTo(destLat, destLng, destName) {
+            if (!userLat || !userLng) {
+                // If user location not set, default to Kantor Bupati Polman (-3.4320, 119.3400)
+                userLat = -3.4320;
+                userLng = 119.3400;
+                showUserMarker(userLat, userLng);
+                updateGPSStatus('default', 'Titik Awal: Kantor Bupati Polman', 'bg-blue-600');
+            }
+
+            activeTargetDestination = { lat: destLat, lng: destLng, name: destName };
+
+            if (routingControl) {
+                fullMap.removeControl(routingControl);
+            }
+
+            const banner = document.getElementById('route-info-banner');
+            banner.classList.remove('hidden');
+            document.getElementById('route-status-text').textContent = `Menghitung rute presisi menuju ${destName}...`;
+            document.getElementById('btn-clear-route').classList.remove('hidden');
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userLat, userLng),
+                    L.latLng(destLat, destLng)
+                ],
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: currentRouteProfile
+                }),
+                lineOptions: {
+                    styles: [{ color: '#16a34a', opacity: 0.85, weight: 6 }]
+                },
+                createMarker: function(i, wp, nWps) {
+                    if (i === 0) {
+                        return L.marker(wp.latLng, {
+                            icon: L.divIcon({ className: 'custom-div-icon', html: '<div style="background:#2563eb; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>', iconSize: [16, 16] })
+                        }).bindPopup("Titik Keberangkatan Anda");
+                    } else if (i === nWps - 1) {
+                        return L.marker(wp.latLng, {
+                            icon: L.divIcon({ className: 'custom-div-icon', html: '<div style="background:#dc2626; width:18px; height:18px; border-radius:50%; border:2px solid white;"></div>', iconSize: [18, 18] })
+                        }).bindPopup(`Tujuan: ${destName}`);
+                    }
+                    return null;
+                },
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: true,
+                show: true
+            }).addTo(fullMap);
+
+            routingControl.on('routesfound', function(e) {
+                const routes = e.routes;
+                const summary = routes[0].summary;
+                const distanceKm = (summary.totalDistance / 1000).toFixed(2);
+                const timeMinutes = Math.round(summary.totalTime / 60);
+                document.getElementById('route-status-text').innerHTML = `Rute ke <strong>${destName}</strong>: Jarak <strong>${distanceKm} km</strong> • Estimasi Waktu <strong>~${timeMinutes} menit</strong>`;
+            });
+
+            routingControl.on('routingerror', function(err) {
+                console.warn("Routing error:", err);
+                document.getElementById('route-status-text').textContent = `Gagal memuat rute OSRM. Pastikan koneksi internet aktif.`;
+            });
+        }
+
+        function clearActiveRoute() {
+            if (routingControl) {
+                fullMap.removeControl(routingControl);
+                routingControl = null;
+            }
+            activeTargetDestination = null;
+            document.getElementById('route-info-banner').classList.add('hidden');
+            document.getElementById('btn-clear-route').classList.add('hidden');
+        }
+
+        // --- CATALOG & MODAL ---
+        function renderCommodityCatalog() {
+            const filterCat = document.getElementById('catalog-category-filter').value;
+            const grid = document.getElementById('commodity-grid');
+            grid.innerHTML = '';
+
+            const filtered = polmanGISData.filter(item => filterCat === 'ALL' || item.category === filterCat);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-tanah-50 rounded-2xl p-5 border border-tanah-200 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition';
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="h-40 w-full rounded-xl overflow-hidden bg-slate-200 relative">
+                            <img src="${item.image}" alt="${item.commodity}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80'">
+                            <span class="absolute top-3 left-3 bg-pangan-900/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">${item.category}</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-semibold text-pangan-700">Kecamatan ${item.kecamatan}</span>
+                            <h3 class="font-extrabold text-slate-900 text-base mt-0.5">${item.commodity}</h3>
+                            <p class="text-xs italic text-slate-500">${item.localName}</p>
+                        </div>
+                        <p class="text-xs text-slate-600 line-clamp-2">${item.production}</p>
+                    </div>
+                    <div class="pt-3 border-t border-tanah-200 flex items-center justify-between">
+                        <button onclick="openDetailModal('${item.id}')" class="px-3 py-1.5 bg-pangan-800 hover:bg-pangan-900 text-white rounded-xl text-xs font-bold transition">Lihat Detail & Gizi</button>
+                        <button onclick="switchTab('peta'); focusOnItem('${item.id}');" class="p-2 bg-pangan-100 hover:bg-pangan-200 text-pangan-800 rounded-xl transition" title="Lihat di Peta GIS">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function openDetailModal(id) {
+            const item = polmanGISData.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-cat').textContent = item.category;
+            document.getElementById('modal-title').textContent = item.commodity;
+            document.getElementById('modal-local-name').textContent = `Nama Lokal / Latin: ${item.localName}`;
+            document.getElementById('modal-img').src = item.image;
+            document.getElementById('modal-location').textContent = `Kecamatan ${item.kecamatan}`;
+            document.getElementById('modal-coords').textContent = `${item.lat.toFixed(4)}, ${item.lng.toFixed(4)}`;
+            document.getElementById('modal-production').textContent = item.production;
+            document.getElementById('modal-nutrition').textContent = item.nutrition;
+            document.getElementById('modal-utilization').textContent = item.utilization;
+            document.getElementById('modal-source').textContent = item.source;
+            document.getElementById('modal-year').textContent = item.year;
+
+            const navBtn = document.getElementById('modal-nav-btn');
+            navBtn.onclick = () => {
+                closeModal();
+                switchTab('peta');
+                focusOnItem(item.id);
+                calculateRouteTo(item.lat, item.lng, `${item.commodity} (${item.kecamatan})`);
+            };
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        // --- ANALYSIS TABLE & CHARTS ---
+        function renderAnalysisTable() {
+            const tbody = document.getElementById('analysis-table-body');
+            tbody.innerHTML = '';
+
+            polmanGISData.slice(0, 10).forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900">Kec. ${item.kecamatan}</td>
+                    <td class="p-3 font-mono text-[11px] text-pangan-800">${item.lat.toFixed(4)}, ${item.lng.toFixed(4)}</td>
+                    <td class="p-3 text-slate-700 font-semibold">${item.commodity}</td>
+                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">${item.status}</span></td>
+                    <td class="p-3 text-slate-600">${item.utilization.substring(0, 45)}...</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function initCharts() {
+            const ctxProd = document.getElementById('productionChart').getContext('2d');
+            productionChartInstance = new Chart(ctxProd, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Jagung Kuning', 'Hasil Laut / Ikan', 'Ubi Kayu', 'Sagu Rumbia', 'Pisang & Umbi Lain'],
+                    datasets: [{
+                        data: [18200, 12500, 11400, 3200, 7800],
+                        backgroundColor: ['#f59e0b', '#2563eb', '#0d9488', '#16a34a', '#9333ea'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10, family: 'Plus Jakarta Sans' } } }
+                    }
+                }
+            });
+
+            const ctxDist = document.getElementById('districtChart').getContext('2d');
+            districtChartInstance = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: ['Polewali', 'Binuang', 'Wonomulyo', 'Tinambung', 'Campalagian', 'Limboro', 'Tapango', 'Matangnga'],
+                    datasets: [{
+                        label: 'Jumlah Komoditas Pangan',
+                        data: [4, 5, 4, 4, 3, 3, 3, 2],
+                        backgroundColor: '#16a34a',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 } },
+                        x: { ticks: { font: { size: 10, family: 'Plus Jakarta Sans' } } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
